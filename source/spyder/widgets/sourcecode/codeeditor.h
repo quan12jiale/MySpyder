@@ -80,6 +80,7 @@ class BlockUserData : public QTextBlockUserData
 {
 public:
     BlockUserData(CodeEditor* editor);
+	~BlockUserData();
     bool is_empty();
 
     CodeEditor* editor;
@@ -87,8 +88,6 @@ public:
     QString breakpoint_condition;
     QList<QPair<QString,bool>> code_analysis;
     QString todo;
-
-    void del();
 };
 
 QString get_file_language(const QString& filename,QString text=QString());
@@ -107,6 +106,9 @@ class CodeEditor : public TextEditBaseWidget, public Widget_get_shortcut_data
 {
     Q_OBJECT
 public:
+	friend class Panel;
+	friend class TextHelper;
+
     QHash<QString,QStringList> LANGUAGES;
     QStringList TAB_ALWAYS_INDENTS;
 signals:

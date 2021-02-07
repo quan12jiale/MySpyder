@@ -1,7 +1,7 @@
 # MySpyder
 
 
-## 仿spyder的python IDE， ( • ̀ω•́ )✧~。对应spyder的v3.3.3版本
+## 仿spyder的python IDE， ( • ̀ω•́ )✧~。对应spyder的v4.0.1版本
 
 ### 功能:
 * Editor。

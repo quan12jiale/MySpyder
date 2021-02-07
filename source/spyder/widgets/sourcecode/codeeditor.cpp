@@ -213,15 +213,14 @@ BlockUserData::BlockUserData(CodeEditor* editor)
     this->editor->blockuserdata_list.append(this);
 }
 
+BlockUserData::~BlockUserData()
+{
+	editor->blockuserdata_list.removeOne(this);
+}
+
 bool BlockUserData::is_empty()
 {
     return (!breakpoint) && (code_analysis.isEmpty()) && (todo.isEmpty());
-}
-
-void BlockUserData::del()
-{
-    editor->blockuserdata_list.removeOne(this);
-    delete this;
 }
 
 
@@ -1508,10 +1507,12 @@ void CodeEditor::add_remove_breakpoint(int line_number, QString condition, bool 
     else
         block = this->document()->findBlockByNumber(line_number-1);
 
+	bool newly_created = false;
     BlockUserData* data = dynamic_cast<BlockUserData*>(block.userData());
     if (data == nullptr) {
         data = new BlockUserData(this);
         data->breakpoint = true;
+		newly_created = true;
     }
     else if (!edit_condition) {
         data->breakpoint = !data->breakpoint;
@@ -1527,8 +1528,14 @@ void CodeEditor::add_remove_breakpoint(int line_number, QString condition, bool 
                                           "Breakpoint",
                                           "Condition",
                                           QLineEdit::Normal,condition,&valid);
-        if (valid == false)
-            return;
+		if (valid == false)
+		{
+			if (newly_created)
+			{
+				delete data;
+			}
+			return;
+		} 
         data->breakpoint = true;
         data->breakpoint_condition = (!condition.isEmpty()) ? condition : QString();
     }
@@ -1564,12 +1571,12 @@ QList<QList<QVariant> > CodeEditor::get_breakpoints()
 
 void CodeEditor::clear_breakpoints()
 {
-    breakpoints.clear();
+	this->breakpoints.clear();
     QList<BlockUserData*> tmp = this->blockuserdata_list;
-    foreach (BlockUserData* data, tmp) {
+    for (BlockUserData* data : tmp) {
         data->breakpoint = false;
         if (data->is_empty())
-            data->del();
+            delete data;
     }
 
     /*for (int i = 0; i < blockuserdata_list.size(); ++i) {
@@ -1585,8 +1592,12 @@ void CodeEditor::clear_breakpoints()
 void CodeEditor::set_breakpoints(const QList<QVariant> &breakpoints)
 {
     this->clear_breakpoints();
-    foreach (auto breakpoint, breakpoints) {
+    for (const auto& breakpoint : breakpoints) {
         QList<QVariant> pair = breakpoint.toList();
+		if (pair.size() < 2)
+		{
+			continue;
+		}
         int line_number = pair[0].toInt();
         QString condition = pair[1].toString();
         this->add_remove_breakpoint(line_number, condition);
@@ -1909,18 +1920,18 @@ void CodeEditor::exec_gotolinedialog()
 
 void CodeEditor::cleanup_code_analysis()
 {
-    setUpdatesEnabled(false);
-    clear_extra_selections("code_analysis");
+	this->setUpdatesEnabled(false);
+	this->clear_extra_selections("code_analysis");
     QList<BlockUserData*> tmp = this->blockuserdata_list;
-    foreach (BlockUserData* data, tmp) {
+    for (BlockUserData* data : tmp) {
         data->code_analysis.clear();
         if (data->is_empty())
-            data->del();
+            delete data;
     }
     this->setUpdatesEnabled(true);
 
-    scrollflagarea->update();
-    linenumberarea->update();
+	this->scrollflagarea->update();
+	this->linenumberarea->update();
 }
 
 
@@ -2066,13 +2077,13 @@ int CodeEditor::go_to_next_todo()
 void CodeEditor::process_todo(const QList<QList<QVariant> > &todo_results)
 {
     QList<BlockUserData*> tmp = this->blockuserdata_list;
-    foreach (BlockUserData* data, tmp) {
+    for (BlockUserData* data : tmp) {
         data->todo = "";
         if (data->is_empty())
-            data->del();
+            delete data;
     }
 
-    foreach (auto pair, todo_results) {
+    for (const auto& pair : todo_results) {
         QString message = pair[0].toString();
         int line_number = pair[1].toInt();
         QTextBlock block = this->document()->findBlockByNumber(line_number-1);
