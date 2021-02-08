@@ -1572,21 +1572,21 @@ QList<QList<QVariant> > CodeEditor::get_breakpoints()
 void CodeEditor::clear_breakpoints()
 {
 	this->breakpoints.clear();
-    QList<BlockUserData*> tmp = this->blockuserdata_list;
+	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
+		this->blockuserdata_list[i]->breakpoint = false;
+		if (this->blockuserdata_list[i]->is_empty()) {
+			delete this->blockuserdata_list[i];
+			this->blockuserdata_list[i] = nullptr;
+		}
+	}
+	this->blockuserdata_list.removeAll(nullptr);
+
+    /*QList<BlockUserData*> tmp = this->blockuserdata_list;
     for (BlockUserData* data : tmp) {
         data->breakpoint = false;
         if (data->is_empty())
             delete data;
-    }
-
-    /*for (int i = 0; i < blockuserdata_list.size(); ++i) {
-        blockuserdata_list[i]->breakpoint = false;
-        if (blockuserdata_list[i]->is_empty()) {
-            delete blockuserdata_list[i];
-            blockuserdata_list[i] = nullptr;
-        }
-    }
-    blockuserdata_list.removeAll(nullptr);*/
+    }*/
 }
 
 void CodeEditor::set_breakpoints(const QList<QVariant> &breakpoints)
@@ -1922,12 +1922,14 @@ void CodeEditor::cleanup_code_analysis()
 {
 	this->setUpdatesEnabled(false);
 	this->clear_extra_selections("code_analysis");
-    QList<BlockUserData*> tmp = this->blockuserdata_list;
-    for (BlockUserData* data : tmp) {
-        data->code_analysis.clear();
-        if (data->is_empty())
-            delete data;
-    }
+	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
+		this->blockuserdata_list[i]->code_analysis.clear();
+		if (this->blockuserdata_list[i]->is_empty()) {
+			delete this->blockuserdata_list[i];
+			this->blockuserdata_list[i] = nullptr;
+		}
+	}
+	this->blockuserdata_list.removeAll(nullptr);
     this->setUpdatesEnabled(true);
 
 	this->scrollflagarea->update();
@@ -2076,12 +2078,14 @@ int CodeEditor::go_to_next_todo()
 
 void CodeEditor::process_todo(const QList<QList<QVariant> > &todo_results)
 {
-    QList<BlockUserData*> tmp = this->blockuserdata_list;
-    for (BlockUserData* data : tmp) {
-        data->todo = "";
-        if (data->is_empty())
-            delete data;
-    }
+	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
+		this->blockuserdata_list[i]->todo.clear();
+		if (this->blockuserdata_list[i]->is_empty()) {
+			delete this->blockuserdata_list[i];
+			this->blockuserdata_list[i] = nullptr;
+		}
+	}
+	this->blockuserdata_list.removeAll(nullptr);
 
     for (const auto& pair : todo_results) {
         QString message = pair[0].toString();
