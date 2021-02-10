@@ -43,8 +43,9 @@ int main(int argc, char *argv[])
 {
     registe_meta_type();
     QApplication a(argc, argv);
-	QString strExePath = QCoreApplication::applicationDirPath();
-	SetCurrentDirectoryW(strExePath.toStdWString().c_str());
+	QString strExePath = QDir::currentPath();
+	strExePath = QCoreApplication::applicationDirPath();
+	QDir::setCurrent(strExePath);
     QSettings settings;
     QString first_run = "first_run";
     if (settings.value(first_run, true).toBool()) {
