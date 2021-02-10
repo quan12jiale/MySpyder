@@ -43,6 +43,8 @@ int main(int argc, char *argv[])
 {
     registe_meta_type();
     QApplication a(argc, argv);
+	QString strExePath = QCoreApplication::applicationDirPath();
+	SetCurrentDirectoryW(strExePath.toStdWString().c_str());
     QSettings settings;
     QString first_run = "first_run";
     if (settings.value(first_run, true).toBool()) {
@@ -63,10 +65,6 @@ int main(int argc, char *argv[])
 	QStringList add_kw = QStringList();
 	add_kw << "async" << "await";
 	QString pattern = sh::make_python_patterns(add_kw);
-	QFile file("F:/GTJ/source/python_patterns.txt");
-	file.open(QIODevice::WriteOnly);
-	file.write(pattern.toUtf8());
-	file.close();
 
     return a.exec();
 }
