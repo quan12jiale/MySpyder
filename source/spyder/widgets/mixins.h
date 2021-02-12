@@ -69,6 +69,7 @@ public:
     QTextCursor __select_text(int position_from,
                               int position_to);
     QString get_text_line(int line_nb);
+	QString get_text_region(int start_line, int end_line);
     QString get_text(const QString& position_from,
                      const QString& position_to);
     QString get_text(const QString& position_from,
@@ -107,7 +108,7 @@ public:
     QPair<int,int> get_selection_bounds();
 
     bool has_selected_text();
-    QString get_selected_text();
+    QString get_selected_text(QTextCursor cursor = QTextCursor());
     void remove_selected_text();
     void replace(QString text, const QString& pattern=QString());
 
@@ -515,6 +516,21 @@ QString BaseEditMixin<T>::get_text_line(int line_nb)
     return block.text();
 }
 
+template <typename T>
+QString BaseEditMixin<T>::get_text_region(int start_line, int end_line)
+{
+	QTextBlock start_block = this->document()->findBlockByLineNumber(start_line);
+	QTextBlock end_block = this->document()->findBlockByLineNumber(end_line);
+
+	QTextCursor start_cursor(start_block);
+	start_cursor.movePosition(QTextCursor::StartOfBlock);
+	QTextCursor end_cursor(end_block);
+	end_cursor.movePosition(QTextCursor::EndOfBlock);
+	int end_position = end_cursor.position();
+	start_cursor.setPosition(end_position, QTextCursor::KeepAnchor);
+	return this->get_selected_text(start_cursor);
+}
+
 /*
  * Return text between *position_from* and *position_to*
    Positions may be positions or 'sol', 'eol', 'sof', 'eof' or 'cursor'
@@ -804,10 +820,14 @@ bool BaseEditMixin<T>::has_selected_text()
 }
 
 template <typename T>
-QString BaseEditMixin<T>::get_selected_text()
+QString BaseEditMixin<T>::get_selected_text(QTextCursor cursor)
 {
     // \u2029是unicode编码的段落分割符 ParagraphSeparator = 0x2029
-    return this->textCursor().selectedText().replace(QChar(QChar::ParagraphSeparator),
+	if (cursor.isNull())
+	{
+		cursor = this->textCursor();
+	}
+    return cursor.selectedText().replace(QChar(QChar::ParagraphSeparator),
                                                      this->get_line_separator());
 }
 

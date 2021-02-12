@@ -3142,10 +3142,12 @@ void CodeEditor::keyReleaseEvent(QKeyEvent *event)
 
 void CodeEditor::keyPressEvent(QKeyEvent *event)
 {
+	emit this->sig_key_pressed(event);
     int key = event->key();
     bool ctrl=  event->modifiers() & Qt::ControlModifier;
     bool shift = event->modifiers() & Qt::ShiftModifier;
     QString text = event->text();
+
     bool has_selection = this->has_selected_text();
     if (!text.isEmpty())
         this->__clear_occurrences();
@@ -3394,6 +3396,12 @@ void CodeEditor::mouseMoveEvent(QMouseEvent *event)
     TextEditBaseWidget::mouseMoveEvent(event);
 }
 
+
+void CodeEditor::setPlainText(const QString &text)
+{
+	__super::setPlainText(text);
+	emit this->new_text_set();
+}
 
 void CodeEditor::leaveEvent(QEvent *event)
 {

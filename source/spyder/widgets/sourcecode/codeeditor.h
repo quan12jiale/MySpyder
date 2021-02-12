@@ -126,6 +126,9 @@ signals:
     void focus_changed();
     void sig_new_file(const QString&);
 
+	void sig_key_pressed(QKeyEvent*);
+	void new_text_set();
+
 public:
     bool edge_line_enabled;
     EdgeLine* edge_line;
@@ -387,6 +390,7 @@ public:
 
     void handle_parentheses(const QString& text);
     void mouseMoveEvent(QMouseEvent *event) override;
+	void setPlainText(const QString &text);
     void leaveEvent(QEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void contextMenuEvent(QContextMenuEvent *event) override;
