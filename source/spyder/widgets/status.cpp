@@ -91,7 +91,7 @@ ReadWriteStatus::ReadWriteStatus(QWidget* parent, QStatusBar* statusbar)
 void ReadWriteStatus::readonly_changed(bool readonly)
 {
     QString readwrite = readonly ? "R" : "RW";
-    this->readwrite->setText(ljust(readwrite, 3));
+    this->readwrite->setText(readwrite.leftJustified(3));
 }
 
 
@@ -138,7 +138,7 @@ EncodingStatus::EncodingStatus(QWidget* parent, QStatusBar* statusbar)
 
 void EncodingStatus::encoding_changed(const QString &encoding)
 {
-    this->encoding->setText(ljust(encoding.toUpper(),15));
+    this->encoding->setText(encoding.toUpper().leftJustified(15));
 }
 
 

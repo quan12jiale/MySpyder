@@ -634,7 +634,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
         }
 
         item->setup();
-        QString tmp = rjust(QString::number(item->line),6);
+        QString tmp = QString::number(item->line).rightJustified(6);
         QString debug = QString("%1 -- %2/%3").arg(tmp)
                         .arg(item->parent()->text(0))
                         .arg(item->text(0));

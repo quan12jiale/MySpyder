@@ -1640,10 +1640,10 @@ void Editor::load()
                                                       QFileDialog::HideNameFilterDetails);
         }
         else {
-            QFileDialog* dialog = new QFileDialog(parent_widget, "Open file");
-            dialog->setOptions(QFileDialog::DontUseNativeDialog);
-            if (dialog->exec())
-                filenames = dialog->selectedFiles();
+            QFileDialog dialog(parent_widget, "Open file");
+            dialog.setOptions(QFileDialog::DontUseNativeDialog);
+            if (dialog.exec())
+                filenames = dialog.selectedFiles();
         }
         emit redirect_stdio(true);
         if (filenames.isEmpty())
@@ -1811,10 +1811,10 @@ void Editor::load(QStringList filenames, int _goto, QString word, QWidget *edito
                                                       QFileDialog::HideNameFilterDetails);
         }
         else {
-            QFileDialog* dialog = new QFileDialog(parent_widget, "Open file");
-            dialog->setOptions(QFileDialog::DontUseNativeDialog);
-            if (dialog->exec())
-                filenames = dialog->selectedFiles();
+            QFileDialog dialog(parent_widget, "Open file");
+            dialog.setOptions(QFileDialog::DontUseNativeDialog);
+            if (dialog.exec())
+                filenames = dialog.selectedFiles();
         }
         emit redirect_stdio(true);
         if (filenames.isEmpty())

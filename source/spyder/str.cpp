@@ -51,6 +51,7 @@ QString rstrip(const QString& text,const QString& before)
     return text.left(j);
 }
 
+// QString QString::leftJustified(int width, QChar fill = QLatin1Char(' '), bool truncate = false) const
 QString ljust(const QString& text,int width,QChar fillchar)
 {
     int len = text.size();

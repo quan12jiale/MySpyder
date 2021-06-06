@@ -59,21 +59,24 @@ bool TabFilter::eventFilter(QObject *obj, QEvent *event)
 {
     Q_UNUSED(obj);
     QEvent::Type event_type = event->type();
-    if (event_type == QEvent::MouseButtonPress) {
-        this->tab_pressed(dynamic_cast<QMouseEvent*>(event));
-        return false;
-    }
-    if (event_type == QEvent::MouseMove) {
-        try {
-            this->tab_moved(dynamic_cast<QMouseEvent*>(event));
-        } catch (...) {
-        }
-        return true;
-    }
-    if (event_type == QEvent::MouseButtonRelease) {
-        this->tab_released(dynamic_cast<QMouseEvent*>(event));
-        return true;
-    }
+	switch (event_type)
+	{
+	case QEvent::MouseButtonPress:
+		this->tab_pressed(static_cast<QMouseEvent*>(event));
+		return false;
+	case QEvent::MouseMove:
+		try {
+			this->tab_moved(static_cast<QMouseEvent*>(event));
+		}
+		catch (...) {
+		}
+		return true;
+	case QEvent::MouseButtonRelease:
+		this->tab_released(static_cast<QMouseEvent*>(event));
+		return true;
+	default:
+		break;
+	}
     return false;
 }
 
