@@ -2,6 +2,8 @@
 
 namespace ima {
 
+// int QMetaEnum::keysToValue(const char *keys)函数是用于根据'|'分割的字符串，获得枚举的异或值。
+// QStyle::StandardPixmap枚举值是连续的，因此改用QMetaEnum::keyToValue接口
 QIcon get_std_icon(QString name, int size)
 {
     if (!name.startsWith("SP_"))
@@ -11,7 +13,7 @@ QIcon get_std_icon(QString name, int size)
     QMetaObject metaObject = QStyle::staticMetaObject;
     int idx = metaObject.indexOfEnumerator("StandardPixmap");
     QMetaEnum metaEnum = metaObject.enumerator(idx);
-    int val = metaEnum.keysToValue(name.toUtf8());
+    int val = metaEnum.keyToValue(name.toUtf8());
     QStyle::StandardPixmap stdIcon = static_cast<QStyle::StandardPixmap>(val);
 
     QIcon icon = QWidget().style()->standardIcon(stdIcon);
