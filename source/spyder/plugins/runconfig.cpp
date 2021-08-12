@@ -395,6 +395,7 @@ void RunConfigOneDialog::setup(const QString &fname)
     this->runconfigoptions->set(RunConfiguration(fname).get());
     QList<QPair<int,QWidget*>> widgets;
     widgets.append(QPair<int,QWidget*>(0, this->runconfigoptions));
+	this->add_widgets(widgets);
     this->add_button_box(QDialogButtonBox::Cancel);
     QFileInfo info(fname);
     this->setWindowTitle(QString("Run settings for %1")

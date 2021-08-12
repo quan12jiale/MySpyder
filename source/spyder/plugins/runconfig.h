@@ -103,7 +103,7 @@ public:
     RunConfigOptions* runconfigoptions;
 
     RunConfigOneDialog(QWidget* parent = nullptr);
-    virtual void setup(const QString& fname);
+    void setup(const QString& fname) override;
     RunConfiguration* get_configuration() const;
 
 public slots:
@@ -120,7 +120,7 @@ public:
     QStackedWidget* stack;
 
     RunConfigDialog(QWidget* parent = nullptr);
-    void setup(const QString& fname);
+    void setup(const QString& fname) override;
 
 public slots:
     void run_btn_clicked();//
