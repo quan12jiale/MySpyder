@@ -43,7 +43,7 @@ class RunConfigOptions : public QWidget
     Q_OBJECT
 public:
     QString dir;
-    RunConfiguration* runconf;
+    RunConfiguration runconf;
 
     QRadioButton* current_radio;
     QRadioButton* dedicated_radio;
@@ -68,7 +68,7 @@ public:
     RunConfigOptions(QWidget* parent = nullptr);
 
     void set(const QHash<QString,QVariant>& options);
-    QHash<QString,QVariant> get() const;
+    QHash<QString,QVariant> get();
 
     bool is_valid();
 

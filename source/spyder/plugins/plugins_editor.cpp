@@ -2364,7 +2364,6 @@ void Editor::run_file(bool debug)
                     SLOT(set_dialog_size(const QSize&)));
             if (this->dialog_size.isValid())
                 dialog->resize(this->dialog_size);
-            QFileInfo info(this->get_current_filename());
             dialog->setup(fname);
 
             bool show_dlg;
@@ -2380,7 +2379,6 @@ void Editor::run_file(bool debug)
             runconf = dialog->get_configuration();
         }
 
-        Q_ASSERT(runconf);
         QString wdir;
 
         QString args = runconf->get_arguments();
@@ -2402,6 +2400,7 @@ void Editor::run_file(bool debug)
             wdir = runconf->dir;
         else
             wdir = "";
+		delete runconf;
 
         __last_ec_exec = Last_Ec_Exec(fname, wdir, args, interact, debug,
                                       python, python_args, current, systerm,

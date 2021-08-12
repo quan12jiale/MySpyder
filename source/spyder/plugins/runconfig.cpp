@@ -144,6 +144,7 @@ void _set_run_configurations(const QList<QPair<QString,QHash<QString,QVariant>>>
     CONF_set("run", "configurations", list.mid(0, history_count));
 }
 
+// 外部负责释放指针
 RunConfiguration* get_run_configuration(const QString& fname)
 {
     auto configurations = _get_run_configurations();
@@ -165,54 +166,54 @@ RunConfigOptions::RunConfigOptions(QWidget* parent)
     : QWidget (parent)
 {
     this->dir = QString();
-    this->runconf = new RunConfiguration;
+    this->runconf = RunConfiguration();
     bool firstrun_o = CONF_get("run", ALWAYS_OPEN_FIRST_RUN_OPTION,
                                false).toBool();
 
-    QGroupBox* interpreter_group = new QGroupBox("Console");
+    QGroupBox* interpreter_group = new QGroupBox("Console", this);
     QVBoxLayout* interpreter_layout = new QVBoxLayout;
     interpreter_group->setLayout(interpreter_layout);
 
-    this->current_radio = new QRadioButton(CURRENT_INTERPRETER);
+    this->current_radio = new QRadioButton(CURRENT_INTERPRETER, this);
     interpreter_layout->addWidget(this->current_radio);
 
-    this->dedicated_radio = new QRadioButton(DEDICATED_INTERPRETER);
+    this->dedicated_radio = new QRadioButton(DEDICATED_INTERPRETER, this);
     interpreter_layout->addWidget(this->dedicated_radio);
 
-    this->systerm_radio = new QRadioButton(SYSTERM_INTERPRETER);
+    this->systerm_radio = new QRadioButton(SYSTERM_INTERPRETER, this);
     interpreter_layout->addWidget(this->systerm_radio);
 
-    QGroupBox* common_group = new QGroupBox("General settings");
+    QGroupBox* common_group = new QGroupBox("General settings", this);
     QGridLayout* common_layout = new QGridLayout;
     common_group->setLayout(common_layout);
 
-    this->clear_var_cb = new QCheckBox(CLEAR_ALL_VARIABLES);
+    this->clear_var_cb = new QCheckBox(CLEAR_ALL_VARIABLES, this);
     common_layout->addWidget(this->clear_var_cb, 0, 0);
 
-    this->post_mortem_cb = new QCheckBox(POST_MORTEM);
+    this->post_mortem_cb = new QCheckBox(POST_MORTEM, this);
     common_layout->addWidget(this->post_mortem_cb, 1, 0);
 
-    this->clo_cb = new QCheckBox("Command line options:");
+    this->clo_cb = new QCheckBox("Command line options:", this);
     common_layout->addWidget(this->clo_cb, 2, 0);
-    this->clo_edit = new QLineEdit();
+    this->clo_edit = new QLineEdit(this);
     connect(clo_cb, SIGNAL(toggled(bool)), clo_edit, SLOT(setEnabled(bool)));
     this->clo_edit->setEnabled(false);
     common_layout->addWidget(this->clo_edit, 2, 1);
 
-    QGroupBox* wdir_group = new QGroupBox("Working Directory settings");
+    QGroupBox* wdir_group = new QGroupBox("Working Directory settings", this);
     QVBoxLayout* wdir_layout = new QVBoxLayout();
     wdir_group->setLayout(wdir_layout);
 
-    this->file_dir_radio = new QRadioButton(FILE_DIR);
+    this->file_dir_radio = new QRadioButton(FILE_DIR, this);
     wdir_layout->addWidget(this->file_dir_radio);
 
-    this->cwd_radio = new QRadioButton(CW_DIR);
+    this->cwd_radio = new QRadioButton(CW_DIR, this);
     wdir_layout->addWidget(this->cwd_radio);
 
     QHBoxLayout* fixed_dir_layout = new QHBoxLayout();
-    this->fixed_dir_radio = new QRadioButton(FIXED_DIR);
+    this->fixed_dir_radio = new QRadioButton(FIXED_DIR, this);
     fixed_dir_layout->addWidget(this->fixed_dir_radio);
-    this->wd_edit = new QLineEdit();
+    this->wd_edit = new QLineEdit(this);
     connect(fixed_dir_radio, SIGNAL(toggled(bool)), wd_edit, SLOT(setEnabled(bool)));
     this->wd_edit->setEnabled(false);
     fixed_dir_layout->addWidget(this->wd_edit);
@@ -222,29 +223,29 @@ RunConfigOptions::RunConfigOptions(QWidget* parent)
     fixed_dir_layout->addWidget(browse_btn);
     wdir_layout->addLayout(fixed_dir_layout);
 
-    QGroupBox* external_group = new QGroupBox("External system terminal");
+    QGroupBox* external_group = new QGroupBox("External system terminal", this);
     external_group->setDisabled(true);
 
     connect(systerm_radio, SIGNAL(toggled(bool)), external_group, SLOT(setEnabled(bool)));
 
     QGridLayout* external_layout = new QGridLayout();
     external_group->setLayout(external_layout);
-    this->interact_cb = new QCheckBox(INTERACT);
+    this->interact_cb = new QCheckBox(INTERACT, this);
     external_layout->addWidget(this->interact_cb, 1, 0, 1, -1);
 
-    this->pclo_cb = new QCheckBox("Command line options:");
+    this->pclo_cb = new QCheckBox("Command line options:", this);
     external_layout->addWidget(this->pclo_cb, 3, 0);
-    this->pclo_edit = new QLineEdit();
+    this->pclo_edit = new QLineEdit(this);
     connect(pclo_cb, SIGNAL(toggled(bool)), pclo_edit, SLOT(setEnabled(bool)));
     this->pclo_edit->setEnabled(false);
     this->pclo_edit->setToolTip("<b>-u</b> is added to the "
                                 "other options you set here");
     external_layout->addWidget(this->pclo_edit, 3, 1);
 
-    QFrame* hline = new QFrame();
+    QFrame* hline = new QFrame(this);
     hline->setFrameShape(QFrame::HLine);
     hline->setFrameShadow(QFrame::Sunken);
-    this->firstrun_cb = new QCheckBox(ALWAYS_OPEN_FIRST_RUN.arg("this dialog"));
+    this->firstrun_cb = new QCheckBox(ALWAYS_OPEN_FIRST_RUN.arg("this dialog"), this);
     connect(firstrun_cb, SIGNAL(clicked()), SLOT(set_firstrun_o()));
     this->firstrun_cb->setChecked(firstrun_o);
 
@@ -274,43 +275,43 @@ void RunConfigOptions::select_directory()
 
 void RunConfigOptions::set(const QHash<QString, QVariant> &options)
 {
-    this->runconf->set(options);
-    this->clo_cb->setChecked(runconf->args_enabled);
-    this->clo_edit->setText(runconf->args);
-    if (runconf->current)
+    this->runconf.set(options);
+    this->clo_cb->setChecked(runconf.args_enabled);
+    this->clo_edit->setText(runconf.args);
+    if (runconf.current)
         this->current_radio->setChecked(true);
-    else if (runconf->systerm)
+    else if (runconf.systerm)
         this->systerm_radio->setChecked(true);
     else
         this->dedicated_radio->setChecked(true);
-    this->interact_cb->setChecked(runconf->interact);
-    this->post_mortem_cb->setChecked(runconf->post_mortem);
-    this->pclo_cb->setChecked(runconf->python_args_enabled);
-    this->pclo_edit->setText(runconf->python_args);
-    this->clear_var_cb->setChecked(runconf->clear_namespace);
-    this->file_dir_radio->setChecked(runconf->file_dir);
-    this->cwd_radio->setChecked(runconf->cw_dir);
-    this->fixed_dir_radio->setChecked(runconf->fixed_dir);
-    this->dir = runconf->dir;
+    this->interact_cb->setChecked(runconf.interact);
+    this->post_mortem_cb->setChecked(runconf.post_mortem);
+    this->pclo_cb->setChecked(runconf.python_args_enabled);
+    this->pclo_edit->setText(runconf.python_args);
+    this->clear_var_cb->setChecked(runconf.clear_namespace);
+    this->file_dir_radio->setChecked(runconf.file_dir);
+    this->cwd_radio->setChecked(runconf.cw_dir);
+    this->fixed_dir_radio->setChecked(runconf.fixed_dir);
+    this->dir = runconf.dir;
     this->wd_edit->setText(this->dir);
 }
 
-QHash<QString,QVariant> RunConfigOptions::get() const
+QHash<QString,QVariant> RunConfigOptions::get()
 {
-    this->runconf->args_enabled = clo_cb->isChecked();
-    this->runconf->args = clo_edit->text();
-    this->runconf->current = current_radio->isChecked();
-    this->runconf->systerm = systerm_radio->isChecked();
-    this->runconf->interact = interact_cb->isChecked();
-    this->runconf->post_mortem = post_mortem_cb->isChecked();
-    this->runconf->python_args_enabled = pclo_cb->isChecked();
-    this->runconf->python_args = pclo_edit->text();
-    this->runconf->clear_namespace = clear_var_cb->isChecked();
-    this->runconf->file_dir = file_dir_radio->isChecked();
-    this->runconf->cw_dir = cwd_radio->isChecked();
-    this->runconf->fixed_dir = fixed_dir_radio->isChecked();
-    this->runconf->dir = wd_edit->text();
-    return runconf->get();
+    this->runconf.args_enabled = clo_cb->isChecked();
+    this->runconf.args = clo_edit->text();
+    this->runconf.current = current_radio->isChecked();
+    this->runconf.systerm = systerm_radio->isChecked();
+    this->runconf.interact = interact_cb->isChecked();
+    this->runconf.post_mortem = post_mortem_cb->isChecked();
+    this->runconf.python_args_enabled = pclo_cb->isChecked();
+    this->runconf.python_args = pclo_edit->text();
+    this->runconf.clear_namespace = clear_var_cb->isChecked();
+    this->runconf.file_dir = file_dir_radio->isChecked();
+    this->runconf.cw_dir = cwd_radio->isChecked();
+    this->runconf.fixed_dir = fixed_dir_radio->isChecked();
+    this->runconf.dir = wd_edit->text();
+    return runconf.get();
 }
 
 bool RunConfigOptions::is_valid()
@@ -412,9 +413,10 @@ void RunConfigOneDialog::accept()
     QDialog::accept();
 }
 
+// 外部负责释放指针
 RunConfiguration* RunConfigOneDialog::get_configuration() const
 {
-    return this->runconfigoptions->runconf;
+    return new RunConfiguration(this->runconfigoptions->runconf);
 }
 
 
@@ -434,13 +436,13 @@ void RunConfigDialog::run_btn_clicked()
 
 void RunConfigDialog::setup(const QString &fname)
 {
-    QLabel* combo_label = new QLabel("Select a run configuration:");
-    this->combo = new QComboBox();
+    QLabel* combo_label = new QLabel("Select a run configuration:", this);
+    this->combo = new QComboBox(this);
     this->combo->setMaxVisibleItems(20);
     this->combo->setSizeAdjustPolicy(QComboBox::AdjustToMinimumContentsLength);
     this->combo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    this->stack = new QStackedWidget();
+    this->stack = new QStackedWidget(this);
 
     QList<QPair<QString,QHash<QString,QVariant>>> configurations = _get_run_configurations();
     bool break_flag = true;

@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.13)
 
 ##配置项目名称/语言/版本
-project(MySpyder
+project(myspyder
     LANGUAGES CXX C
     VERSION 1.0
 )
@@ -62,7 +62,6 @@ find_package(Qt5Widgets REQUIRED )
 
 
 add_subdirectory(spyder)
-add_subdirectory(musicplayer)
 
 # 设置启动项
 set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT spyder)
