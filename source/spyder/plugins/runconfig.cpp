@@ -360,7 +360,7 @@ void BaseRunConfigDialog::add_widgets(const QList<QPair<int, QWidget *> > &widge
 
 void BaseRunConfigDialog::add_button_box(QDialogButtonBox::StandardButtons stdbtns)
 {
-    QDialogButtonBox* bbox = new QDialogButtonBox(stdbtns);
+    QDialogButtonBox* bbox = new QDialogButtonBox(stdbtns, this);
     QPushButton* run_btn = bbox->addButton("Run", QDialogButtonBox::AcceptRole);
     connect(run_btn, SIGNAL(clicked()), SLOT(run_btn_clicked()));
     connect(bbox, SIGNAL(accepted()), SLOT(accept()));

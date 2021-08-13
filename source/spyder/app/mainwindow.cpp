@@ -762,7 +762,7 @@ void MainWindow::set_window_settings(QString hexstate, QSize window_size, QSize 
             settings.setValue(run_count, 2);
         }
         else {
-            // !!!当添加新控件时，位置不对，可以先禁用这里
+            // !!!当添加新控件时，或第一次打开，位置不对，可以先禁用这里
             this->restoreState(QByteArray::fromHex(hexstate.toUtf8()));
         }
         foreach (QObject* obj, this->children()) {
@@ -924,7 +924,6 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
     foreach (SpyderPluginMixin* widget, widgets) {
         widget->toggle_view(true);
         QAction* action = widget->toggle_view_action;
-        Q_ASSERT(action != nullptr);
         action->setChecked(widget->dockwidget->isVisible());
     }
 
@@ -942,8 +941,6 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
         for (int i = 0; i < column.size()-1; ++i) {
             auto first_row = column[i];
             auto second_row = column[i+1];
-            Q_ASSERT(!first_row.isEmpty());
-            Q_ASSERT(!second_row.isEmpty());
             this->splitDockWidget(first_row[0]->dockwidget,
                     second_row[0]->dockwidget,
                     Qt::Vertical);
@@ -957,36 +954,51 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
                 auto first = row[i];
                 auto second = row[i+1];
                 if (first && second)
+					//将this->explorer, this->findinfiles放到一个页签
                     this->tabify_plugins(first, second);
             }
 
-            Q_ASSERT(!row.isEmpty());
-            row[0]->dockwidget->raise();
+			// Raise front widget per row
+            row[0]->dockwidget->show();
             row[0]->dockwidget->raise();
         }
     }
 
-
+	this->_layout_widget_info.clear();
     int width = this->window_size.width();
     int height = this->window_size.height();
 
-    // fix column width
-    for (int c = 0; c < widgets_layout.size(); ++c) {
-        auto widget = widgets_layout[c][0][0]->dockwidget;
-        int new_width = static_cast<int>(width_fraction[c] * width * 0.95);
-        widget->setMinimumWidth(new_width);
-        widget->setMinimumWidth(new_width);
-        widget->updateGeometry();
-    }
+    // fix column width 源码中也注释了设置固定宽度
+//     for (int c = 0; c < widgets_layout.size(); ++c) {
+// 		SpyderDockWidget* widget = widgets_layout[c][0][0]->dockwidget;
+// 		int min_width = widget->minimumWidth(), max_width = widget->maximumWidth();
+// 		QHash<QString, size_t> info;
+// 		info["widget"] = reinterpret_cast<size_t>(widget);
+// 		info["min width"] = min_width;
+// 		info["max width"] = max_width;
+// 		this->_layout_widget_info.append(info);
+//         int new_width = static_cast<int>(width_fraction[c] * width * 0.95);
+//         widget->setMinimumWidth(new_width);
+//         widget->setMaximumWidth(new_width);
+//         widget->updateGeometry();
+//     }
 
     // fix column height
     for (int c = 0; c < widgets_layout.size(); ++c) {
         auto column = widgets_layout[c];
         for (int r = 0; r < column.size()-1; ++r) {
-            auto widget = column[r][0]->dockwidget;
+			SpyderPluginMixin* widget = column[r][0];
+			SpyderDockWidget* dockwidget = widget->dockwidget;
+			int dock_min_h = dockwidget->minimumHeight();
+			int dock_max_h = dockwidget->maximumHeight();
+			QHash<QString, size_t> info;
+			info["widget"] = reinterpret_cast<size_t>(widget);
+			info["dock min height"] = dock_min_h;
+			info["dock max height"] = dock_max_h;
+			this->_layout_widget_info.append(info);
             int new_height = static_cast<int>(height_fraction[c][r] * height * 0.95);
-            widget->setMinimumWidth(new_height);
-            widget->setMinimumWidth(new_height);
+			dockwidget->setMinimumHeight(new_height);
+			dockwidget->setMaximumHeight(new_height);
         }
     }
 
@@ -999,7 +1011,17 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
 void MainWindow::layout_fix_timer()
 {
     QList<QHash<QString, size_t>> info = this->_layout_widget_info;
-    // todo
+	for (const QHash<QString, size_t>& i : info)
+	{
+		SpyderPluginMixin* widget = reinterpret_cast<SpyderPluginMixin*>(i["widget"]);
+		SpyderDockWidget* dockwidget = widget->dockwidget;
+		if (i.contains("dock min height"))
+		{
+			dockwidget->setMinimumHeight(i["dock min height"]);
+			dockwidget->setMaximumHeight(i["dock max height"]);
+		}
+		dockwidget->updateGeometry();
+	}
     this->setUpdatesEnabled(true);
 }
 
