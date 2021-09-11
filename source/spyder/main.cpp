@@ -5,7 +5,7 @@
 
 #include "plugins/ipythonconsole.h"
 #include "app/mainwindow.h"
-
+#include "plugins\editor\utils\editor.h"
 
 void registe_meta_type()
 {
@@ -52,6 +52,7 @@ int main(int argc, char *argv[])
         settings.setValue(first_run, false);
     }
     initialize();
+	testDelayJobRunner();
 
     MainWindow* win = new MainWindow;
     win->setup();

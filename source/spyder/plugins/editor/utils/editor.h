@@ -12,7 +12,14 @@ class DelayJobRunner : public QObject
 	Q_OBJECT
 public:
 	DelayJobRunner(int delay = 500);
-	void request_job(const std::function<void()>& job);
+	template<class _Ret,
+		class... _Types>
+	void request_job(const std::function<_Ret (_Types...)>& job, _Types... args)
+	{
+		this->cancel_requests();
+		this->_job = [=]()->void { job(args...); };
+		this->_timer->start(this->delay);
+	}
 	void cancel_requests();
 
 private slots:
@@ -24,6 +31,7 @@ private:
 	std::function<void()> _job;
 };
 
+void testDelayJobRunner();
 
 class TextHelper
 {

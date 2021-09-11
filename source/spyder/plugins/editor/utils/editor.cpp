@@ -28,13 +28,6 @@ DelayJobRunner::DelayJobRunner(int delay /*= 500*/)
 	this->_job = nullptr;
 }
 
-void DelayJobRunner::request_job(const std::function<void()>& job)
-{
-	this->cancel_requests();
-	this->_job = job;
-	this->_timer->start(this->delay);
-}
-
 void DelayJobRunner::cancel_requests()
 {
 	this->_timer->stop();
@@ -44,9 +37,23 @@ void DelayJobRunner::cancel_requests()
 void DelayJobRunner::_exec_requested_job()
 {
 	this->_timer->stop();
-	this->_job();
+	if (this->_job)
+	{
+		this->_job();
+	}
 }
 
+static void tmpDelayJobFunc(int x, double y)
+{
+	int z = x + y;
+}
+
+void testDelayJobRunner()
+{
+	auto _highlight_runner = new DelayJobRunner(250);
+	std::function<void(int, double)> job = tmpDelayJobFunc;
+	_highlight_runner->request_job(job, 1, 2.0);
+}
 
 TextHelper::TextHelper(CodeEditor* editor)
 {

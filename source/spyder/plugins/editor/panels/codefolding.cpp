@@ -441,8 +441,9 @@ void FoldingPanel::mouseMoveEvent(QMouseEvent *event)
 			else
 			{
 				this->_mouse_over_line = block.blockNumber();
-				auto job = [&]()->void { this->_highlight_block(block); };
-				this->_highlight_runner->request_job(job);
+				std::function<void (QTextBlock)> job
+					= [&](QTextBlock block)->void { this->_highlight_block(block); };
+				this->_highlight_runner->request_job(job, block);
 			}
 			this->_highight_block = block;
 		}
