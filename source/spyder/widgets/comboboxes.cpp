@@ -11,8 +11,7 @@ BaseComboBox::BaseComboBox(QWidget* parent)
 
 bool BaseComboBox::event(QEvent *event)
 {
-    QKeyEvent* keyevent = dynamic_cast<QKeyEvent*>(event);
-    if ((event->type() == QEvent::KeyPress) && (keyevent->key() == Qt::Key_Tab)) {
+    if ((event->type() == QEvent::KeyPress) && (static_cast<QKeyEvent*>(event)->key() == Qt::Key_Tab)) {
         emit sig_tab_pressed(true);
         numpress += 1;
         if (numpress == 1)

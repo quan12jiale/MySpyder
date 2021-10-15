@@ -72,17 +72,33 @@ void SearchThread::stop()
 bool SearchThread::find_files_in_path(const QString &path)
 {
     this->pathlist.append(path);
-    QStringList list;
-    bool ok = os::walk(path, &list, this->exclude);
-    //我实现的walk()函数不像python中是生成器的形式，因此无法中途停止搜索
-    if (ok) {
-        foreach (QString filename, list)
-            this->find_string_in_file(filename);
-    }
-    else {
-        this->error_flag = "invalid regular expression";
-        return false;
-    }
+	QDirIterator it(path, QDir::Files, QDirIterator::Subdirectories);
+	QRegularExpression re(this->exclude);
+	if (!this->exclude.isEmpty())
+	{
+		if (!re.isValid())
+		{
+			this->error_flag = "invalid regular expression";
+			return false;
+		}
+	}
+	while (it.hasNext()) {
+		QString absolute_sub_path = it.next();
+		{
+			QMutexLocker locker(&mutex);
+			if (stopped)
+				return false;
+		}
+		if (absolute_sub_path.contains(".git") || absolute_sub_path.contains(".hg"))
+			continue;
+		if (!this->exclude.isEmpty())
+		{
+			QRegularExpressionMatch match = re.match(absolute_sub_path);
+			if (match.hasMatch())
+				continue;
+		}
+		this->find_string_in_file(absolute_sub_path);
+	}
     return true;
 }
 
@@ -330,8 +346,7 @@ void SearchInComboBox::set_project_path(QString path)
 
 bool SearchInComboBox::eventFilter(QObject *widget, QEvent *event)
 {
-    QKeyEvent* keyevent = dynamic_cast<QKeyEvent*>(event);
-    if (event->type() == QEvent::KeyPress && keyevent->key() == Qt::Key_Delete) {
+    if (event->type() == QEvent::KeyPress && static_cast<QKeyEvent*>(event)->key() == Qt::Key_Delete) {
         int index = this->view()->currentIndex().row();
         if (index >= EXTERNAL_PATHS) {
             this->removeItem(index);
@@ -351,7 +366,7 @@ void SearchInComboBox::__redirect_stdio_emit(bool value)
 {
     QObject* parent = this->parent();
     while (parent) {
-        FindInFiles* tmp = dynamic_cast<FindInFiles*>(parent);
+        FindInFiles* tmp = qobject_cast<FindInFiles*>(parent);
         if (tmp) {
             emit tmp->redirect_stdio(value);
             break;
@@ -623,12 +638,12 @@ void FindOptions::set_file_path(const QString &path)
 
 void FindOptions::keyPressEvent(QKeyEvent *event)
 {
-    FindInFiles* parent = dynamic_cast<FindInFiles*>(this->parent());
     Qt::KeyboardModifiers ctrl = event->modifiers() & Qt::ControlModifier;
     Qt::KeyboardModifiers shift = event->modifiers() & Qt::ShiftModifier;
     if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
         emit this->find();
     else if (event->key() == Qt::Key_F && ctrl && shift) {
+		FindInFiles* parent = qobject_cast<FindInFiles*>(this->parent());
         if (parent)
             emit parent->toggle_visibility(!this->isVisible());
     }
@@ -637,7 +652,7 @@ void FindOptions::keyPressEvent(QKeyEvent *event)
 }
 
 
-/********** FileMatchItem **********/
+/********** LineMatchItem **********/
 LineMatchItem::LineMatchItem(QTreeWidgetItem* parent, const QStringList &title)
     : QTreeWidgetItem(parent, title, QTreeWidgetItem::Type)
 {}
@@ -657,7 +672,7 @@ bool LineMatchItem::operator<(const LineMatchItem &other) const
     return this->lineno < other.lineno;
 }
 
-bool LineMatchItem::operator>(const LineMatchItem &other) const
+bool LineMatchItem::operator>=(const LineMatchItem &other) const
 {
     return this->lineno >= other.lineno;
 }
@@ -675,7 +690,7 @@ QStringList fileMatchItemHelp(const QString filename)
 
 }
 FileMatchItem::FileMatchItem(QTreeWidget *parent, const QString& filename,
-              QHash<QString,QString> sorting, const QStringList &title)
+	const QHash<QString,QString>& sorting, const QStringList &title)
     : QTreeWidgetItem(parent, title, QTreeWidgetItem::Type)
 {
     this->sorting = sorting;
@@ -689,23 +704,17 @@ bool FileMatchItem::operator<(const FileMatchItem &other) const
 {
     if (sorting["status"] == ON) {
         int res = this->filename.compare(other.filename);
-        if (res < 0)
-            return true;
-        else
-            return false;
+		return res < 0;
     }
     else
         return false;
 }
 
-bool FileMatchItem::operator>(const FileMatchItem &other) const
+bool FileMatchItem::operator>=(const FileMatchItem &other) const
 {
     if (sorting["status"] == ON) {
         int res = this->filename.compare(other.filename);
-        if (res >= 0)
-            return true;
-        else
-            return false;
+        return res >= 0;
     }
     else
         return false;
@@ -722,11 +731,7 @@ void ItemDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
     QStyleOptionViewItem options(option);
     initStyleOption(&options, index);
 
-    QStyle* style;
-    if (options.widget == nullptr)
-        style = QApplication::style();
-    else
-        style = options.widget->style();
+    QStyle* style = options.widget ? options.widget->style() : QApplication::style();
 
     QTextDocument doc;
     doc.setDocumentMargin(0);
@@ -780,7 +785,7 @@ void ResultsBrowser::activated(QTreeWidgetItem *item)
     if (itemdata.lineno != -1) {
         QString filename = itemdata.filename;
         int lineno = itemdata.lineno;
-        FindInFiles* parent = dynamic_cast<FindInFiles*>(this->parent());
+        FindInFiles* parent = qobject_cast<FindInFiles*>(this->parent());
         if (parent)
             emit parent->edit_goto(filename, lineno, this->search_text);
     }
@@ -1032,13 +1037,14 @@ void FindInFilesWidget::find()
     stop_and_reset_thread(true);
     search_thread = new SearchThread(this);
     connect(search_thread,SIGNAL(sig_finished(bool)),this,SLOT(search_complete(bool)));
-    connect(search_thread,&SearchThread::sig_current_file,
+	// 不加this参数，会走qobject.h文件287行的connect函数模板，连接类型是DirectConnection。多线程需要加一个context参数，走297行的函数模板
+    connect(search_thread,&SearchThread::sig_current_file, this,
             [=](QString x){status_bar->set_label_path(x,false);});
-    connect(search_thread,&SearchThread::sig_current_folder,
+    connect(search_thread,&SearchThread::sig_current_folder, this,
             [=](QString x){status_bar->set_label_path(x,true);});
     connect(search_thread,&SearchThread::sig_file_match,
             result_browser,&ResultsBrowser::append_result);
-    connect(search_thread,&SearchThread::sig_out_print,
+    connect(search_thread,&SearchThread::sig_out_print, this,
             [=](QString x){qDebug() << x;});
     status_bar->reset();
     result_browser->clear_title(find_options->search_text->currentText());

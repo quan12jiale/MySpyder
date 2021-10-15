@@ -191,7 +191,7 @@ public:
     QString match;
     LineMatchItem(QTreeWidgetItem* parent, const QStringList &title);
     bool operator<(const LineMatchItem &other) const;
-    bool operator>(const LineMatchItem &other) const;
+    bool operator>=(const LineMatchItem &other) const;
 };
 
 
@@ -201,9 +201,9 @@ public:
     QHash<QString,QString> sorting;
     QString filename;
     FileMatchItem(QTreeWidget *parent,const QString& filename,
-                  QHash<QString,QString> sorting, const QStringList& title);
+                  const QHash<QString,QString>& sorting, const QStringList& title);
     bool operator<(const FileMatchItem &other) const;
-    bool operator>(const FileMatchItem &other) const;
+    bool operator>=(const FileMatchItem &other) const;
 };
 
 
