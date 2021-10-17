@@ -50,6 +50,7 @@ signals:
     void sig_out_print(QString);//源码中是object，而且该项目中并没有出现过发送该信号的情况
 
 public:
+	QMutex mutex;
     bool stopped;
     //results
     QStringList pathlist;

@@ -25,8 +25,6 @@ QString truncate_path(const QString& text)
 
 
 /********** SearchThread **********/
-static QMutex mutex;
-
 SearchThread::SearchThread(QObject *parent)
     : QThread (parent)
 {
@@ -97,7 +95,10 @@ bool SearchThread::find_files_in_path(const QString &path)
 			if (match.hasMatch())
 				continue;
 		}
-		this->find_string_in_file(absolute_sub_path);
+		if (encoding::is_text_file(absolute_sub_path))
+		{
+			this->find_string_in_file(absolute_sub_path);
+		}
 	}
     return true;
 }
@@ -115,7 +116,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
             QString text;
             foreach (auto pair, this->texts) {
                 text = pair.first;
-                if (true) {
+                {
                     QMutexLocker locker(&mutex);
                     if (stopped)
                         return false;
@@ -144,7 +145,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
                 QRegularExpressionMatchIterator iterator = re.globalMatch(line);
                 while (iterator.hasNext()) {
                     QRegularExpressionMatch match = iterator.next();
-                    if (true) {
+                    {
                         QMutexLocker locker(&mutex);
                         if (stopped)
                             return false;
@@ -162,7 +163,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
             else {
                 int found = line.indexOf(text);
                 while (found > -1) {
-                    if (true) {
+                    {
                         QMutexLocker locker(&mutex);
                         if (stopped)
                             return false;

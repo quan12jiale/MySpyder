@@ -22,14 +22,18 @@ bool is_binary(const QString& filename)
     QList<int> text_characters = {'\n', '\r', '\t', '\f', '\b'};
     for (int i=32;i<127;i++)
         text_characters.append(i);
-    QList<int> nontext;
+    //QList<int> nontext;
+	int nontextCnt = 0;
     foreach (char ch, chunk) {
         if (ch == 0)
             // Files with null bytes are binary
             return true;
-        if (!text_characters.contains(ch))
-            nontext.append(ch);
+		if (!text_characters.contains(ch))
+		{
+			//nontext.append(ch);
+			nontextCnt++;
+		}  
     }
     //只能针对ASCII编码，对utf-8编码会误判
-    return static_cast<double>(nontext.size()) / chunk.size() > 0.3;
+    return static_cast<double>(nontextCnt) / chunk.size() > 0.3;
 }
