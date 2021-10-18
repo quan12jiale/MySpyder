@@ -91,7 +91,7 @@ FindReplace::FindReplace(QWidget* parent, bool enable_replace)
         hlayout->addWidget(widget);
     glayout->addLayout(hlayout, 0, 1);
 
-    QLabel* replace_with = new QLabel("Replace with:");
+    QLabel* replace_with = new QLabel("Replace with:", this);
     this->replace_text = new PatternComboBox(this, QStringList(),
                                              "Replace string", false);
     connect(this->replace_text, &PatternComboBox::valid,
@@ -123,14 +123,13 @@ FindReplace::FindReplace(QWidget* parent, bool enable_replace)
     connect(this->replace_all_button, SIGNAL(clicked(bool)), this, SLOT(update_search_combo()));
 
     this->replace_layout = new QHBoxLayout;
-    QList<QWidget*> widgets;
-    widgets << replace_with << this->replace_text << this->replace_button
+	this->replace_widgets << replace_with << this->replace_text << this->replace_button
             << this->replace_sel_button << this->replace_all_button;
-    foreach (QWidget* widget, widgets)
+    foreach (QWidget* widget, this->replace_widgets)
         this->replace_layout->addWidget(widget);
     glayout->addLayout(this->replace_layout, 1, 1);
-    this->widgets.append(widgets);
-    this->replace_widgets = widgets;
+
+    this->widgets.append(this->replace_widgets);
     this->hide_replace();
 
     this->search_text->setTabOrder(this->search_text, this->replace_text);
@@ -149,7 +148,7 @@ FindReplace::FindReplace(QWidget* parent, bool enable_replace)
 bool FindReplace::eventFilter(QObject *widget, QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyevent = dynamic_cast<QKeyEvent*>(event);
+        QKeyEvent* keyevent = static_cast<QKeyEvent*>(event);
         int key = keyevent->key();
         Qt::KeyboardModifiers shift = keyevent->modifiers() & Qt::ShiftModifier;
 
@@ -160,7 +159,7 @@ bool FindReplace::eventFilter(QObject *widget, QEvent *event)
                 emit this->return_pressed();
         }
 
-        if (key == Qt::Key_Tab) {
+        else if (key == Qt::Key_Tab) {
             if (this->search_text->hasFocus())
                 this->replace_text->set_current_text(this->search_text->currentText());
             this->focusNextChild();
@@ -443,6 +442,7 @@ void FindReplace::replace_find(bool focus_replace_text, bool replace_all)
         bool _case = this->case_button->isChecked();
         bool first = true;
         QTextCursor cursor;
+		bool hasBeginEditBlock = false;
         while (true) {
             bool wrapped = false;
             int position = 0, position0 = 0;
@@ -489,6 +489,7 @@ void FindReplace::replace_find(bool focus_replace_text, bool replace_all)
                 position0 = position;
                 cursor = editor->textCursor();
                 cursor.beginEditBlock();
+				hasBeginEditBlock = true;
             }
             else {
                 int position1 = editor->get_position("cursor");
@@ -527,7 +528,7 @@ void FindReplace::replace_find(bool focus_replace_text, bool replace_all)
             }
         }
 
-        if (!cursor.isNull()) {
+        if (hasBeginEditBlock) { // !cursor.isNull()
             // 调用cursor.endEditBlock()就会报错"QList<T>::operator[]", "index out of range"
             cursor.endEditBlock();
         }
