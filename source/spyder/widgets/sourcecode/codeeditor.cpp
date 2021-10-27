@@ -5,27 +5,27 @@ GoToLineDialog::GoToLineDialog(CodeEditor* editor)
                | Qt::WindowCloseButtonHint)
 {
     setAttribute(Qt::WA_DeleteOnClose);
-    lineno = -1;
+	this->lineno = -1;
     this->editor = editor;
 
     setWindowTitle("Editor");
     setModal(true);
 
-    QLabel *label = new QLabel("Go to line:");
-    lineedit = new QLineEdit;
-    QIntValidator* validator = new QIntValidator(lineedit);
+    QLabel *label = new QLabel("Go to line:", this);
+	this->lineedit = new QLineEdit(this);
+    QIntValidator* validator = new QIntValidator(this->lineedit);
     validator->setRange(1, editor->get_line_count());
-    lineedit->setValidator(validator);
-    connect(lineedit,SIGNAL(textChanged(const QString &)),
+	this->lineedit->setValidator(validator);
+    connect(this->lineedit,SIGNAL(textChanged(const QString &)),
             this,SLOT(text_has_changed(const QString &)));
-    QLabel *cl_label = new QLabel("Current line:");
-    QLabel *cl_label_v = new QLabel(QString("<b>%1</b>").arg(editor->get_cursor_line_number()));
-    QLabel *last_label = new QLabel("Line count:");
-    QLabel *last_label_v = new QLabel(QString("%1").arg(editor->get_line_count()));
+    QLabel *cl_label = new QLabel("Current line:", this);
+    QLabel *cl_label_v = new QLabel(QString("<b>%1</b>").arg(editor->get_cursor_line_number()), this);
+    QLabel *last_label = new QLabel("Line count:", this);
+    QLabel *last_label_v = new QLabel(QString("%1").arg(editor->get_line_count()), this);
 
     QGridLayout* glayout = new QGridLayout();
     glayout->addWidget(label, 0, 0, Qt::AlignVCenter|Qt::AlignRight);
-    glayout->addWidget(lineedit, 0, 1, Qt::AlignVCenter);
+    glayout->addWidget(this->lineedit, 0, 1, Qt::AlignVCenter);
     glayout->addWidget(cl_label, 1, 0, Qt::AlignVCenter|Qt::AlignRight);
     glayout->addWidget(cl_label_v, 1, 1, Qt::AlignVCenter);
     glayout->addWidget(last_label, 2, 0, Qt::AlignVCenter|Qt::AlignRight);
@@ -41,7 +41,7 @@ GoToLineDialog::GoToLineDialog(CodeEditor* editor)
 
     QPushButton* ok_button = bbox->button(QDialogButtonBox::Ok);
     ok_button->setEnabled(false);
-    connect(lineedit,&QLineEdit::textChanged,
+    connect(this->lineedit,&QLineEdit::textChanged,
             [=](const QString& text) { ok_button->setEnabled(text.size()>0); });
 
     QHBoxLayout* layout = new QHBoxLayout;
@@ -49,20 +49,20 @@ GoToLineDialog::GoToLineDialog(CodeEditor* editor)
     layout->addLayout(btnlayout);
     setLayout(layout);
 
-    lineedit->setFocus();
+	this->lineedit->setFocus();
 }
 
 void GoToLineDialog::text_has_changed(const QString &text)
 {
     if (!text.isEmpty())
-        lineno = text.toInt();
+		this->lineno = text.toInt();
     else
-        lineno = -1;
+		this->lineno = -1;
 }
 
-int GoToLineDialog::get_line_number()
+int GoToLineDialog::get_line_number() const
 {
-    return lineno;
+    return this->lineno;
 }
 
 
@@ -110,9 +110,9 @@ void LineNumberArea::wheelEvent(QWheelEvent *event)
     code_editor->wheelEvent(event);
 }
 
-int ScrollFlagArea::WIDTH = 12;
-int ScrollFlagArea::FLAGS_DX = 4;
-int ScrollFlagArea::FLAGS_DY = 2;
+const int ScrollFlagArea::WIDTH = 12;
+const int ScrollFlagArea::FLAGS_DX = 4;
+const int ScrollFlagArea::FLAGS_DY = 2;
 
 ScrollFlagArea::ScrollFlagArea(CodeEditor* editor)
     : QWidget (editor)
@@ -188,7 +188,7 @@ EdgeLine::EdgeLine(QWidget* editor)
     : QWidget (editor)
 {
     code_editor = editor;
-    column = 79;
+	this->column = 79;
     setAttribute(Qt::WA_TransparentForMouseEvents);
 }
 
@@ -215,7 +215,7 @@ BlockUserData::BlockUserData(CodeEditor* editor)
 
 BlockUserData::~BlockUserData()
 {
-	editor->blockuserdata_list.removeOne(this);
+	this->editor->blockuserdata_list.removeOne(this);
 }
 
 bool BlockUserData::is_empty()
@@ -223,14 +223,8 @@ bool BlockUserData::is_empty()
     return (!breakpoint) && (code_analysis.isEmpty()) && (todo.isEmpty());
 }
 
-
-static void set_scrollflagarea_painter(QPainter* painter,const QString& light_color)
-{
-    painter->setPen(QColor(light_color).darker(120));
-    painter->setBrush(QBrush(QColor(light_color)));
-}
-//提供该函数对QColor的重载是为了scrollflagarea_paint_event()函数
-static void set_scrollflagarea_painter(QPainter* painter,const QColor& light_color)
+template <typename T> // T可以是QString、QColor
+void set_scrollflagarea_painter(QPainter* painter,const T& light_color)
 {
     painter->setPen(QColor(light_color).darker(120));
     painter->setBrush(QBrush(QColor(light_color)));

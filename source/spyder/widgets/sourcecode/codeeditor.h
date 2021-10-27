@@ -22,7 +22,7 @@ public:
     QLineEdit* lineedit;
 public:
     GoToLineDialog(CodeEditor* editor);
-    int get_line_number();
+    int get_line_number() const;
 
 public slots:
     void text_has_changed(const QString& text);
@@ -49,9 +49,9 @@ class ScrollFlagArea : public QWidget
 {
     Q_OBJECT
 public:
-    static int WIDTH;
-    static int FLAGS_DX;
-    static int FLAGS_DY;
+    static const int WIDTH;
+    static const int FLAGS_DX;
+    static const int FLAGS_DY;
     ScrollFlagArea(CodeEditor* editor);
     QSize sizeHint() const override;
     void paintEvent(QPaintEvent *event) override;
