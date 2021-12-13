@@ -1,4 +1,5 @@
 ﻿#include "codeeditor.h"
+#include "utils/SyntaxHighlighterFactory.h"
 
 GoToLineDialog::GoToLineDialog(CodeEditor* editor)
     : QDialog (editor, Qt::WindowTitleHint
@@ -259,9 +260,9 @@ QString get_file_language(const QString& filename,QString text)
 CodeEditor::CodeEditor(QWidget* parent)
     : TextEditBaseWidget (parent)
 {
-    this->LANGUAGES = {{"Python", {"PythonSH", "#"}},
-                       {"Cpp", {"CppSH", "//"}},
-                       {"Markdown", {"MarkdownSH", "#"}}};
+    this->LANGUAGES = {{ PythonSHType, "#"},
+                       { CppSHType, "//"},
+                       { MarkdownSHType, "#"}};
     this->TAB_ALWAYS_INDENTS = QStringList({"py", "pyw", "python", "c", "cpp", "cl", "h"});
 
     setFocusPolicy(Qt::StrongFocus);
@@ -301,7 +302,7 @@ CodeEditor::CodeEditor(QWidget* parent)
 
     linenumbers_color = QColor(Qt::darkGray);
 
-    highlighter_class = "TextSH";
+    highlighter_class = TextSHType;
     highlighter = nullptr;
     //QString ccs = "Spyder";
     //if (!sh::COLOR_SCHEME_NAMES.contains(ccs))
@@ -904,54 +905,43 @@ void CodeEditor::set_language(const QString &language, const QString &filename)
 {
     this->tab_indents = this->TAB_ALWAYS_INDENTS.contains(language);
     this->comment_string = "";
-    QString sh_class = "TextSH";
+	this->highlighter_class = TextSHType;
     if (!language.isEmpty()) {
-        //以后在这里添加别的语言，记得在构造函数更新LANGUAGES成员
-        QStringList list({"Python", "Cpp", "Markdown"});
-        foreach (QString key, list) {
-            if (sourcecode::ALL_LANGUAGES[key].contains(language.toLower())) {
-                this->supported_language = true;
-                sh_class = LANGUAGES[key][0];
-                QString comment_string = LANGUAGES[key][1];
-                this->comment_string = comment_string;
-
-                //key in CELL_LANGUAGES等价于key == "Python"
-                if (key == "Python") {
-                    this->supported_cell_language = true;
-                    this->cell_separators = sourcecode::CELL_LANGUAGES[key];
-                }
-                break;
-            }
-        }
+		for (auto iter = sourcecode::ALL_LANGUAGES.begin(); 
+			iter != sourcecode::ALL_LANGUAGES.end(); iter++)
+		{
+			HighlighterEnumType key = iter.key();
+			QStringList value = iter.value();
+			if (value.contains(language.toLower()))
+			{
+				this->supported_language = true;
+				this->highlighter_class = key;
+				this->comment_string = LANGUAGES[key];
+				if (sourcecode::CELL_LANGUAGES.contains(key))
+				{
+					this->supported_cell_language = true;
+					this->cell_separators = sourcecode::CELL_LANGUAGES[key];
+				}
+				break;
+			}
+		}
     }
 
-    this->_set_highlighter(sh_class);
+    this->_set_highlighter(this->highlighter_class);
 }
 
-void CodeEditor::_set_highlighter(const QString& sh_class)
+void CodeEditor::_set_highlighter(HighlighterEnumType sh_class)
 {
-    this->highlighter_class = sh_class;
     if (this->highlighter) {
         this->highlighter->setParent(nullptr);
         this->highlighter->setDocument(nullptr);
+		delete this->highlighter;
     }
-    if (highlighter_class == "PythonSH") {
-        highlighter = new sh::PythonSH(this->document(),
-                                       this->font(),
-                                       this->color_scheme);
-    }
-    else if (highlighter_class == "CppSH")
-        highlighter = new sh::CppSH(this->document(),
-                                         this->font(),
-                                         this->color_scheme);
-    else if (highlighter_class == "MarkdownSH")
-        highlighter = new sh::MarkdownSH(this->document(),
-                                         this->font(),
-                                         this->color_scheme);
-    else if (highlighter_class == "TextSH")
-        highlighter = new sh::TextSH(this->document(),
-                                     this->font(),
-                                     this->color_scheme);
+	this->highlighter = HighlighterFactoryMgr::instance()
+		->createHighlighter(sh_class,
+		this->document(),
+		this->font(),
+		this->color_scheme);
     this->_apply_highlighter_color_scheme();
 }
 
@@ -964,22 +954,22 @@ bool CodeEditor::is_json()
 
 bool CodeEditor::is_python()
 {
-    return this->highlighter_class == "PythonSH";
+    return this->highlighter_class == PythonSHType;
 }
 
 bool CodeEditor::is_cpp()
 {
-    return this->highlighter_class == "CppSH";
+    return this->highlighter_class == CppSHType;
 }
 
 bool CodeEditor::is_cython()
 {
-    return this->highlighter_class == "CythonSH";
+    return false;
 }
 
 bool CodeEditor::is_enmal()
 {
-    return this->highlighter_class == "EnamlSH";
+    return false;
 }
 
 bool CodeEditor::is_python_like()

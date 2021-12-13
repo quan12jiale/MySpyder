@@ -1,4 +1,5 @@
 ﻿#include "sourcecode.h"
+#include "utils/SyntaxHighlighterFactory.h"
 
 namespace sourcecode {
 
@@ -8,24 +9,24 @@ static QList<QPair<QString, QString>> EOL_CHARS = {QPair<QString, QString>("\r\n
                                                    QPair<QString, QString>("\n", "posix"),
                                                    QPair<QString, QString>("\r", "mac"),};
 
-QHash<QString,QStringList> ALL_LANGUAGES = {{"Python",{"py", "pyw", "python", "ipy"}},
-                                           {"Cython",{"pyx", "pxi", "pxd"}},
-                                           {"Enaml",{"enaml"}},
-                                           {"Fortran77",{"f", "for", "f77"}},
-                                           {"Fortran",{"f90", "f95", "f2k"}},
-                                           {"Idl",{"pro"}},
-                                           {"Diff",{"diff", "patch", "rej"}},
-                                           {"GetText",{"po", "pot"}},
-                                           {"Nsis",{"nsi", "nsh"}},
-                                           {"Html",{"htm", "html"}},
-                                           {"Cpp",{"c", "cc", "cpp", "cxx", "h", "hh", "hpp", "hxx"}},
-                                           {"OpenCL",{"cl"}},
-                                           {"Yaml",{"yaml", "yml"}},
-                                           {"Markdown",{"md", "mdw"}}
+const QHash<HighlighterEnumType,QStringList> ALL_LANGUAGES = {{PythonSHType,{"py", "pyw", "python", "ipy"}},
+//                                            {"Cython",{"pyx", "pxi", "pxd"}},
+//                                            {"Enaml",{"enaml"}},
+//                                            {"Fortran77",{"f", "for", "f77"}},
+//                                            {"Fortran",{"f90", "f95", "f2k"}},
+//                                            {"Idl",{"pro"}},
+//                                            {"Diff",{"diff", "patch", "rej"}},
+//                                            {"GetText",{"po", "pot"}},
+//                                            {"Nsis",{"nsi", "nsh"}},
+//                                            {"Html",{"htm", "html"}},
+                                           {CppSHType,{"c", "cc", "cpp", "cxx", "h", "hh", "hpp", "hxx"}},
+//                                            {"OpenCL",{"cl"}},
+//                                            {"Yaml",{"yaml", "yml"}},
+                                           {MarkdownSHType,{"md", "mdw"}}
                                            };
 
-QHash<QString,QStringList> CELL_LANGUAGES =
-{{"Python", {"#%%", "# %%", "# <codecell>", "# In["}}};
+const QHash<HighlighterEnumType,QStringList> CELL_LANGUAGES =
+{{ PythonSHType, {"#%%", "# %%", "# <codecell>", "# In["}}};
 
 QString get_eol_chars(const QString& text)
 {

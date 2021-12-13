@@ -6,11 +6,13 @@
 #include <QStringList>
 #include <QHash>
 
+enum HighlighterEnumType;
+
 namespace sourcecode {
 
-extern QHash<QString,QStringList> ALL_LANGUAGES;
+extern const QHash<HighlighterEnumType,QStringList> ALL_LANGUAGES;
 
-extern QHash<QString,QStringList> CELL_LANGUAGES;
+extern const QHash<HighlighterEnumType,QStringList> CELL_LANGUAGES;
 
 QString get_eol_chars(const QString& text);
 QString get_os_name_from_eol_chars(const QString& eol_chars);

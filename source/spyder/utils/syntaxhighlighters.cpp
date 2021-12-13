@@ -1,4 +1,5 @@
 ﻿#include "syntaxhighlighters.h"
+#include "utils/SyntaxHighlighterFactory.h"
 
 namespace sh {
 
@@ -197,7 +198,7 @@ void BaseSH::rehighlight()
     QApplication::restoreOverrideCursor();
 }
 
-
+SPYDER_REGISTER_HIGHLIGHTER(TextSHType, TextSH)
 TextSH::TextSH(QTextDocument *parent,const QFont& font,const QHash<QString,ColorBoolBool>& color_scheme)
     : BaseSH (parent, font, color_scheme)
 {}
@@ -316,6 +317,7 @@ QString OutlineExplorerData::get_token()
 
 
 /********** PythonSH **********/
+SPYDER_REGISTER_HIGHLIGHTER(PythonSHType, PythonSH)
 PythonSH::PythonSH(QTextDocument *parent,const QFont& font,const QHash<QString,ColorBoolBool>& color_scheme)
     : BaseSH (parent, font, color_scheme)
 {
@@ -334,7 +336,7 @@ PythonSH::PythonSH(QTextDocument *parent,const QFont& font,const QHash<QString,C
 
     import_statements = QHash<int,QString>();
     found_cell_separators = false;
-    cell_separators = sourcecode::CELL_LANGUAGES["Python"];
+    cell_separators = sourcecode::CELL_LANGUAGES[PythonSHType];
 
 	int nCaptureCount = this->PROG.captureCount();
 	strListCaptureGroups = this->PROG.namedCaptureGroups();
@@ -560,6 +562,7 @@ QString make_cpp_patterns()
     return make_generic_c_patterns(C_KEYWORDS1+' '+C_KEYWORDS2, C_KEYWORDS3);
 }
 
+SPYDER_REGISTER_HIGHLIGHTER(CppSHType, CppSH)
 CppSH::CppSH(QTextDocument *parent,const QFont& font,const QHash<QString,ColorBoolBool>& color_scheme)
     : BaseSH (parent, font, color_scheme)
 {
@@ -678,7 +681,7 @@ QString make_md_patterns()
     return tmp.join('|');
 }
 
-
+SPYDER_REGISTER_HIGHLIGHTER(MarkdownSHType, MarkdownSH)
 MarkdownSH::MarkdownSH(QTextDocument *parent,const QFont& font,const QHash<QString,ColorBoolBool>& color_scheme)
     : BaseSH (parent, font, color_scheme)
 {

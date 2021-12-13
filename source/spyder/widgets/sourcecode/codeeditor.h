@@ -12,6 +12,7 @@
 #include <QPrinter>
 
 class CodeEditor;
+enum HighlighterEnumType;
 
 class GoToLineDialog : public QDialog
 {
@@ -109,7 +110,7 @@ public:
 	friend class Panel;
 	friend class TextHelper;
 
-    QHash<QString,QStringList> LANGUAGES;
+    QHash<HighlighterEnumType,QString> LANGUAGES;
     QStringList TAB_ALWAYS_INDENTS;
 signals:
     void painted(QPaintEvent*);
@@ -157,7 +158,7 @@ public:
     QColor comment_color;
     QColor linenumbers_color;
 
-    QString highlighter_class;
+	HighlighterEnumType highlighter_class;
     sh::BaseSH* highlighter;
     QHash<QString,ColorBoolBool> color_scheme;
     bool highlight_current_line_enabled;
@@ -256,7 +257,7 @@ public:
     void set_highlight_current_line(bool enable);
     void set_highlight_current_cell(bool enable);
     void set_language(const QString& language,const QString& filename=QString());
-    void _set_highlighter(const QString& sh_class);
+    void _set_highlighter(HighlighterEnumType sh_class);
 
     bool is_json();
     bool is_python();
