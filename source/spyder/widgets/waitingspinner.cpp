@@ -134,7 +134,7 @@ void QWaitingSpinner::updateTimer()
 void QWaitingSpinner::updatePosition()
 {
     if (parentWidget() && _centerOnParent)
-        move(parentWidget()->width() / 2 - width() / 2,
+		this->move(parentWidget()->width() / 2 - width() / 2,
              parentWidget()->height() / 2 - height() / 2);
 }
 

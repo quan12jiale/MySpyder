@@ -134,7 +134,7 @@ bool DlgGitHubLogin::eventFilter(QObject *obj, QEvent *event)
     QList<QObject*> interesting_objects;
     interesting_objects << this->le_password << this->le_user;
     if (interesting_objects.contains(obj) && event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyevent = dynamic_cast<QKeyEvent*>(event);
+        QKeyEvent* keyevent = static_cast<QKeyEvent*>(event);
         if (keyevent->key() == Qt::Key_Return &&
                 (keyevent->modifiers() & Qt::ControlModifier) &&
                 this->bt_sign_in->isEnabled()) {

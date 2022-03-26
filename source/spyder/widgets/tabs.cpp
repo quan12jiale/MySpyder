@@ -48,7 +48,7 @@ void EditTabNamePopup::edit_tab(int index)
 
     setFixedSize(rect.size());
 
-    move(main->mapToGlobal(rect.topLeft()));
+	this->move(main->mapToGlobal(rect.topLeft()));
 
     QString text = main->tabText(index);
     text.replace("&", "");

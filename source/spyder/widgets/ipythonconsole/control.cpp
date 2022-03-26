@@ -28,7 +28,7 @@ bool ControlCallTip::eventFilter(QObject *obj, QEvent *event)
         QEvent::Type etype = event->type();
 
         if (etype == QEvent::KeyPress) {
-            QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
+            QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
             int key = keyEvent->key();
             QTextCursor cursor = _text_edit->textCursor();
             QChar prev_char = _text_edit->get_character(cursor.position(),-1);
@@ -222,8 +222,8 @@ bool ControlCallTip::show_tip(QPoint point, const QString &tip, QStringList wrap
     if (horizontal == "Left")
         point.setX(adjusted_point.x() - tip_width - padding);
 
-    move(point);
-    show();
+	this->move(point);
+	this->show();
     return true;
 }
 

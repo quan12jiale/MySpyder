@@ -128,7 +128,7 @@ KeyPressFilter::KeyPressFilter(QObject* parent)
 bool KeyPressFilter::eventFilter(QObject *src, QEvent *e)
 {
     if (e->type() == QEvent::KeyPress) {
-        QKeyEvent* keyevent = dynamic_cast<QKeyEvent*>(e);
+        QKeyEvent* keyevent = static_cast<QKeyEvent*>(e);
         if (keyevent->key() == Qt::Key_Up)
             emit sig_up_key_pressed();
         else if (keyevent->key() == Qt::Key_Down)
@@ -375,7 +375,7 @@ void FileSwitcher::set_dialog_position()
         left += geo.left();
         parent = qobject_cast<QWidget*>(parent->parent());
     }
-    move(left, top);
+	this->move(left, top);
 }
 
 QSize FileSwitcher::get_item_size(const QStringList &content)
