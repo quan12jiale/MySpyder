@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include <atomic>
 #include "fnmatch.h"
 #include "os.h"
 #include "config/config_main.h"
@@ -49,9 +49,9 @@ signals:
     void sig_file_match(QString,int,int,int,QString,int);
     void sig_out_print(QString);//源码中是object，而且该项目中并没有出现过发送该信号的情况
 
-public:
-	QMutex mutex;
-    bool stopped;
+private:
+	//QMutex mutex;
+    std::atomic_bool stopped;
     //results
     QStringList pathlist;
     int total_matches;
@@ -69,6 +69,7 @@ public:
     SearchThread(QObject* parent);
     void initialize(const StruNotSave& stru);
     void stop();
+	bool getStopped() const;
     bool find_files_in_path(const QString& path);
     bool find_string_in_file(const QString& fname);
     //SearchResults get_results();

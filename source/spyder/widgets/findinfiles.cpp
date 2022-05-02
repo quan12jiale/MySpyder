@@ -63,8 +63,14 @@ void SearchThread::run()
 
 void SearchThread::stop()
 {
-    QMutexLocker locker(&mutex);
+    //QMutexLocker locker(&mutex);
     this->stopped = true;
+}
+
+bool SearchThread::getStopped() const
+{
+	//QMutexLocker locker(&mutex);
+	return this->stopped;
 }
 
 bool SearchThread::find_files_in_path(const QString &path)
@@ -83,8 +89,7 @@ bool SearchThread::find_files_in_path(const QString &path)
 	while (it.hasNext()) {
 		QString absolute_sub_path = it.next();
 		{
-			QMutexLocker locker(&mutex);
-			if (stopped)
+			if (this->getStopped())
 				return false;
 		}
 		if (absolute_sub_path.contains(".git") || absolute_sub_path.contains(".hg"))
@@ -117,8 +122,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
             foreach (auto pair, this->texts) {
                 text = pair.first;
                 {
-                    QMutexLocker locker(&mutex);
-                    if (stopped)
+                    if (this->getStopped())
                         return false;
                 }
                 QString line_search = line;
@@ -146,8 +150,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
                 while (iterator.hasNext()) {
                     QRegularExpressionMatch match = iterator.next();
                     {
-                        QMutexLocker locker(&mutex);
-                        if (stopped)
+                        if (this->getStopped())
                             return false;
                     }
                     this->total_matches++;
@@ -164,8 +167,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
                 int found = line.indexOf(text);
                 while (found > -1) {
                     {
-                        QMutexLocker locker(&mutex);
-                        if (stopped)
+                        if (this->getStopped())
                             return false;
                     }
                     this->total_matches++;
