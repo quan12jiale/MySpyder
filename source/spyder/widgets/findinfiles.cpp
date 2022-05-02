@@ -64,12 +64,14 @@ void SearchThread::run()
 void SearchThread::stop()
 {
     //QMutexLocker locker(&mutex);
+	//QWriteLocker locker(&lock);
     this->stopped = true;
 }
 
 bool SearchThread::getStopped() const
 {
 	//QMutexLocker locker(&mutex);
+	//QReadLocker locker(&lock);
 	return this->stopped;
 }
 

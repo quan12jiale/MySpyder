@@ -50,8 +50,9 @@ signals:
     void sig_out_print(QString);//源码中是object，而且该项目中并没有出现过发送该信号的情况
 
 private:
-	//QMutex mutex;
-    std::atomic_bool stopped;
+	//mutable QMutex mutex;// 1、互斥量
+	//mutable QReadWriteLock lock;// 2、读写锁
+    std::atomic_bool stopped;// 3、原子操作
     //results
     QStringList pathlist;
     int total_matches;
