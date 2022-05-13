@@ -36,13 +36,6 @@ void CompletionWidget::setup_appearance(const QSize &size, const QFont &font)
     this->setFont(font);
 }
 
-bool any(const QStringList& iterable) {
-    foreach (const QString& element, iterable) {
-        if (!element.isEmpty())
-            return true;
-    }
-    return false;
-}
 void CompletionWidget::show_list(const QList<QPair<QString, QString> >& completion_list, bool automatic)
 {
     QStringList types, _completion_list;
@@ -65,7 +58,7 @@ void CompletionWidget::show_list(const QList<QPair<QString, QString> >& completi
                                         {"class", "class"},
                                         {"module", "module"}};
     this->type_list = types;
-    if (any(types)) {
+	if (std::any_of(types.cbegin(), types.cend(), [](QString element) { return !element.isEmpty(); })) {
         for (int i = 0; i<std::min(_completion_list.size(), types.size()); ++i) {
             QString icon = icons_map.value(types[i],"no_match");
             this->addItem(new QListWidgetItem(ima::icon(icon),_completion_list[i]));

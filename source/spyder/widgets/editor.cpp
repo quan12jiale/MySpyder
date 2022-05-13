@@ -2590,15 +2590,6 @@ void EditorStack::re_run_last_cell()
         emit exec_in_extconsole(text, focus_to_editor);
 }
 
-bool any(const QList<bool>& text)
-{
-    foreach (bool m, text) {
-        if (m)
-            return true;
-    }
-    return false;
-}
-
 void EditorStack::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData* source = event->mimeData();
@@ -2608,7 +2599,7 @@ void EditorStack::dragEnterEvent(QDragEnterEvent *event)
         foreach (QString url, all_urls) {
             text.append(encoding::is_text_file(url));
         }
-        if (any(text))
+		if (std::any_of(text.cbegin(), text.cend(), [](bool is_text) { return is_text; }))
             event->acceptProposedAction();
         else
             event->ignore();
