@@ -1559,18 +1559,11 @@ void CodeEditor::clear_breakpoints()
 	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
 		this->blockuserdata_list[i]->breakpoint = false;
 		if (this->blockuserdata_list[i]->is_empty()) {
-			delete this->blockuserdata_list[i];
+			//delete this->blockuserdata_list[i];
 			this->blockuserdata_list[i] = nullptr;
 		}
 	}
 	this->blockuserdata_list.removeAll(nullptr);
-
-    /*QList<BlockUserData*> tmp = this->blockuserdata_list;
-    for (BlockUserData* data : tmp) {
-        data->breakpoint = false;
-        if (data->is_empty())
-            delete data;
-    }*/
 }
 
 void CodeEditor::set_breakpoints(const QList<QVariant> &breakpoints)
@@ -1909,7 +1902,7 @@ void CodeEditor::cleanup_code_analysis()
 	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
 		this->blockuserdata_list[i]->code_analysis.clear();
 		if (this->blockuserdata_list[i]->is_empty()) {
-			delete this->blockuserdata_list[i];
+			//delete this->blockuserdata_list[i];
 			this->blockuserdata_list[i] = nullptr;
 		}
 	}
@@ -2065,7 +2058,7 @@ void CodeEditor::process_todo(const QList<QList<QVariant> > &todo_results)
 	for (int i = 0; i < this->blockuserdata_list.size(); ++i) {
 		this->blockuserdata_list[i]->todo.clear();
 		if (this->blockuserdata_list[i]->is_empty()) {
-			delete this->blockuserdata_list[i];
+			//delete this->blockuserdata_list[i];//不能delete，因为QTextBlock会负责释放该内存.这里delete，会导致undo时崩溃
 			this->blockuserdata_list[i] = nullptr;
 		}
 	}
