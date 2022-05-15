@@ -13,7 +13,12 @@ QString file_uri(const QString& fname);
 QStringList mimedata2url(const QMimeData* source,const QStringList& extlist=QStringList());
 
 void toggle_actions(const QList<QAction*>& actions, bool enable);
-
+QAction* create_action(QObject* parent, const QString& text, 
+	const QString& shortcut = QString(),
+	const QIcon& icon = QIcon(), const QString& tip = QString(),
+	const char* toggledSlot = nullptr, const char* triggeredSlot = nullptr,
+	const QString& data = QString(), QAction::MenuRole menurole = QAction::NoRole,
+	Qt::ShortcutContext context = Qt::WindowShortcut);
 void add_shortcut_to_tooltip(QAction* action, const QString& context, const QString& name);
 
 void add_actions(QMenu* target,const QList<QAction*>& actions,QAction* insert_before=nullptr);

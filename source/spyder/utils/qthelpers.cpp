@@ -110,6 +110,50 @@ void toggle_actions(const QList<QAction*>& actions, bool enable)
     }
 }
 
+QAction* create_action(QObject* parent, const QString& text, 
+	const QString& shortcut /*= QString()*/, 
+	const QIcon& icon /*= QIcon()*/, const QString& tip /*= QString()*/, 
+	const char* toggledSlot /*= nullptr*/, const char* triggeredSlot /*= nullptr*/,
+	const QString& data /*= QString()*/, QAction::MenuRole menurole /*= QAction::NoRole*/, 
+	Qt::ShortcutContext context /*= Qt::WindowShortcut*/)
+{
+	QAction* action = new QAction(text, parent);
+	bool success = true;//该函数信号槽连接的receiver都是parent
+	if (triggeredSlot)
+	{
+		success = QObject::connect(action, SIGNAL(triggered()), parent, triggeredSlot);
+	}
+	if (toggledSlot)
+	{
+		success = QObject::connect(action, SIGNAL(toggled(bool)), parent, toggledSlot);
+		action->setCheckable(true);
+	}
+	Q_ASSERT(success);
+	if (!icon.isNull())
+	{
+		action->setIcon(icon);
+	}
+	if (!tip.isEmpty())
+	{
+		action->setToolTip(tip);
+		action->setStatusTip(tip);
+	}
+	if (!data.isEmpty())
+	{
+		action->setData(data);
+	}
+	if (menurole != QAction::NoRole)
+	{
+		action->setMenuRole(menurole);
+	}
+	if (!shortcut.isEmpty())
+	{
+		action->setShortcut(QKeySequence(shortcut));
+	}
+	action->setShortcutContext(context);
+	return action;
+}
+
 void add_shortcut_to_tooltip(QAction* action, const QString& context, const QString& name)
 {
     action->setToolTip(action->toolTip() + QString(" (%1)").arg(gui::get_shortcut(context, name)));

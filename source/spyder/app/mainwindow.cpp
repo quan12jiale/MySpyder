@@ -206,11 +206,18 @@ void MainWindow::setup()
     connect(close_dockwidget_action, SIGNAL(triggered()), SLOT(close_current_dockwidget()));
     close_dockwidget_action->setShortcutContext(Qt::ApplicationShortcut);
     this->register_shortcut(close_dockwidget_action, "_", "Close pane");
-
+#if 1
+	lock_dockwidgets_action = create_action(this, "Lock panes",
+		QString(), QIcon(), QString(), 
+		SLOT(toggle_lock_dockwidgets(bool)), nullptr, 
+		QString(), QAction::NoRole, 
+		Qt::ApplicationShortcut);
+#else
     lock_dockwidgets_action = new QAction("Lock panes", this);
     connect(lock_dockwidgets_action, SIGNAL(toggled(bool)), SLOT(toggle_lock_dockwidgets(bool)));
     lock_dockwidgets_action->setCheckable(true);
     lock_dockwidgets_action->setShortcutContext(Qt::ApplicationShortcut);
+#endif
     this->register_shortcut(lock_dockwidgets_action, "_", "Lock unlock panes");
 
     toggle_next_layout_action = new QAction("Use next layout", this);
@@ -239,7 +246,28 @@ void MainWindow::setup()
 
     this->file_toolbar_actions.clear();
     file_toolbar_actions << file_switcher_action << symbol_finder_action;
+#if 1
+	auto create_edit_action = [this](const QString& text, 
+		const QString& tr_text, const QIcon& icon) -> QAction*
+	{
+		const QStringList textseq = text.split(' ');
+		QString method_name = textseq[0].toLower() + textseq.mid(1).join("");
+		QAction* action = create_action(this, tr_text,
+			QString(), icon, QString(),
+			nullptr, SLOT(global_callback()),
+			method_name, QAction::NoRole,
+			Qt::WidgetShortcut);
+		this->register_shortcut(action, "Editor", text);
+		return action;
+	};
 
+	undo_action = create_edit_action("Undo", "Undo", ima::icon("undo"));
+	redo_action = create_edit_action("Redo", "Redo", ima::icon("redo"));
+	copy_action = create_edit_action("Copy", "Copy", ima::icon("editcopy"));
+	cut_action = create_edit_action("Cut", "Cut", ima::icon("editcut"));
+	paste_action = create_edit_action("Paste", "Paste", ima::icon("editpaste"));
+	selectall_action = create_edit_action("Select All", "Select All", ima::icon("selectall"));
+#else
     undo_action = new QAction(ima::icon("undo"), "Undo", this);
     connect(undo_action, SIGNAL(triggered()), SLOT(global_callback()));
     undo_action->setData("undo");
@@ -275,7 +303,7 @@ void MainWindow::setup()
     selectall_action->setData("selectAll");
     selectall_action->setShortcutContext(Qt::WidgetShortcut);
     this->register_shortcut(selectall_action, "Editor", "Select All");
-
+#endif
     this->edit_menu_actions.clear();
     edit_menu_actions << undo_action << redo_action
                       << nullptr << cut_action << copy_action
@@ -323,12 +351,17 @@ void MainWindow::setup()
     connect(prefs_action, SIGNAL(triggered()), SLOT(edit_preferences()));
     prefs_action->setShortcutContext(Qt::ApplicationShortcut);
     this->register_shortcut(prefs_action, "_", "Preferences", true);
-
+#if 1
+	QAction* spyder_path_action = create_action(this, "PYTHONPATH manager", 
+		QString(), ima::icon("pythonpath"), "Python Path Manager", 
+		nullptr, SLOT(path_manager_callback()), 
+		QString(), QAction::ApplicationSpecificRole);
+#else
     QAction* spyder_path_action = new QAction(ima::icon("pythonpath"), "PYTHONPATH manager", this);
     spyder_path_action->setToolTip("Python Path Manager");
     connect(spyder_path_action, SIGNAL(triggered()), SLOT(path_manager_callback()));
     spyder_path_action->setMenuRole(QAction::ApplicationSpecificRole);
-
+#endif
     QAction* update_modules_action = new QAction("Update module names list", this);
     update_modules_action->setToolTip("Refresh list of module names available in PYTHONPATH");
     //triggered=lambda: module_completion.reset()
@@ -472,11 +505,15 @@ void MainWindow::setup()
 
     QAction* tut_action = new QAction("Spyder tutorial", this);
     //triggered=this->help.show_tutorial
-
+#if 1
+	QAction* shortcuts_action = create_action(this, "Shortcuts Summary", 
+		"Meta+F1", QIcon(), QString(), 
+		nullptr, SLOT(show_shortcuts_dialog()));
+#else
     QAction* shortcuts_action = new QAction("Shortcuts Summary", this);
     shortcuts_action->setShortcut(QKeySequence("Meta+F1"));
     connect(shortcuts_action, SIGNAL(triggered()), SLOT(show_shortcuts_dialog()));
-
+#endif
     //from spyder.app import tour
     // this->tour = tour.AnimatedTour(self)
     tours_menu = new QMenu("Interactive tours");
@@ -1925,7 +1962,11 @@ void MainWindow::global_callback()
     QWidget* widget = QApplication::focusWidget();
     QAction* action = qobject_cast<QAction*>(this->sender());
     QString callback = action->data().toString();
-
+#if 1
+	std::string method_name = callback.toStdString();
+	bool success = QMetaObject::invokeMethod(widget, method_name.c_str());
+	method_name.clear();
+#else
     TextEditBaseWidget* base_widget = qobject_cast<TextEditBaseWidget*>(widget);
     ControlWidget* ctl_widget = qobject_cast<ControlWidget*>(widget);
 
@@ -1957,6 +1998,7 @@ void MainWindow::global_callback()
         else if (callback == "selectAll")
             ctl_widget->selectAll();
     }
+#endif
 }
 
 void MainWindow::redirect_internalshell_stdio(bool state)
