@@ -8,6 +8,7 @@ class NumpyArrayDialog;
 
 class NumpyArrayInline : public QLineEdit
 {
+	Q_OBJECT
 public:
     NumpyArrayInline(NumpyArrayDialog* parent);
     void keyPressEvent(QKeyEvent *event) override;

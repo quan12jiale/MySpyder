@@ -83,7 +83,7 @@ void CompletionWidget::show_list(const QList<QPair<QString, QString> >& completi
     point = this->textedit->mapToGlobal(point);
 
     int comp_right = point.x()+this->width();
-    QWidget* ancestor = dynamic_cast<QWidget*>(this->parent());
+    QWidget* ancestor = qobject_cast<QWidget*>(this->parent());
     int anc_right;
     if (ancestor==nullptr)
         anc_right = screen_right;
@@ -94,7 +94,7 @@ void CompletionWidget::show_list(const QList<QPair<QString, QString> >& completi
         point.setX(point.x()-this->width());
 
     int comp_bottom = point.y()+this->height();
-    ancestor = dynamic_cast<QWidget*>(this->parent());
+    ancestor = qobject_cast<QWidget*>(this->parent());
     int anc_bottom;
     if (ancestor==nullptr)
         anc_bottom = screen_bottom;

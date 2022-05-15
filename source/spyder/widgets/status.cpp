@@ -27,7 +27,7 @@ BaseTimerStatus::BaseTimerStatus(QWidget* parent, QStatusBar* statusbar)
     QFontMetrics fm = value->fontMetrics();
     value->setMinimumWidth(fm.width("000%"));
 
-    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(this->layout());
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(this->layout());
     layout->addWidget(label);
     layout->addWidget(value);
     layout->addSpacing(20);
@@ -82,7 +82,7 @@ ReadWriteStatus::ReadWriteStatus(QWidget* parent, QStatusBar* statusbar)
     label->setAlignment(Qt::AlignRight);
     readwrite->setFont(label_font);
 
-    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(this->layout());
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(this->layout());
     layout->addWidget(label);
     layout->addWidget(readwrite);
     layout->setSpacing(20);
@@ -105,7 +105,7 @@ EOLStatus::EOLStatus(QWidget* parent, QStatusBar* statusbar)
     label->setAlignment(Qt::AlignRight);
     eol->setFont(label_font);
 
-    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(this->layout());
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(this->layout());
     layout->addWidget(label);
     layout->addWidget(eol);
     layout->setSpacing(20);
@@ -130,7 +130,7 @@ EncodingStatus::EncodingStatus(QWidget* parent, QStatusBar* statusbar)
     label->setAlignment(Qt::AlignRight);
     encoding->setFont(label_font);
 
-    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(this->layout());
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(this->layout());
     layout->addWidget(label);
     layout->addWidget(encoding);
     layout->setSpacing(20);
@@ -154,7 +154,7 @@ CursorPositionStatus::CursorPositionStatus(QWidget* parent, QStatusBar* statusba
     line->setFont(label_font);
     column->setFont(label_font);
 
-    QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>(this->layout());
+    QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(this->layout());
     layout->addWidget(label_line);
     layout->addWidget(line);
     layout->addWidget(label_column);

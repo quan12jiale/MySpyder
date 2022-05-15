@@ -259,8 +259,8 @@ void DirView::edit_filter()
         foreach (QString f, filters.split(',')) {
             list.append(f.trimmed());
         }
-        ExplorerWidget* widget1 = dynamic_cast<ExplorerWidget*>(parent_widget);
-        ProjectExplorerWidget* widget2 = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+        ExplorerWidget* widget1 = qobject_cast<ExplorerWidget*>(parent_widget);
+        ProjectExplorerWidget* widget2 = qobject_cast<ProjectExplorerWidget*>(parent_widget);
         if (widget1)
             emit widget1->sig_option_changed("name_filters", list);
         else if (widget2)
@@ -271,8 +271,8 @@ void DirView::edit_filter()
 
 void DirView::toggle_all(bool checked)
 {
-    ExplorerWidget* widget1 = dynamic_cast<ExplorerWidget*>(parent_widget);
-    ProjectExplorerWidget* widget2 = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+    ExplorerWidget* widget1 = qobject_cast<ExplorerWidget*>(parent_widget);
+    ProjectExplorerWidget* widget2 = qobject_cast<ProjectExplorerWidget*>(parent_widget);
     if (widget1)
         emit widget1->sig_option_changed("show_all", checked);
     else if (widget2)
@@ -612,8 +612,8 @@ void DirView::open(QStringList fnames)
     foreach (QString fname, fnames) {
         QFileInfo info(fname);
         if (info.isFile() && encoding::is_text_file(fname)) {
-            ExplorerWidget* widget1 = dynamic_cast<ExplorerWidget*>(parent_widget);
-            ProjectExplorerWidget* widget2 = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+            ExplorerWidget* widget1 = qobject_cast<ExplorerWidget*>(parent_widget);
+            ProjectExplorerWidget* widget2 = qobject_cast<ProjectExplorerWidget*>(parent_widget);
             if (widget1)
                 emit widget1->sig_open_file(fname);
             else if (widget2)
@@ -632,7 +632,7 @@ void DirView::open_outside_spyder(QStringList fnames)
         QString path = file_uri(tmp);
         bool ok = programs::start_file(path);
         if (ok == false) {
-            Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+            Explorer* parent = qobject_cast<Explorer*>(parent_widget);
             if (parent)
                 emit parent->edit(path);
         }
@@ -643,7 +643,7 @@ void DirView::open_interpreter(QStringList fnames)
 {
     std::sort(fnames.begin(), fnames.end());
     foreach (QString path, fnames) {
-        Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+        Explorer* parent = qobject_cast<Explorer*>(parent_widget);
         if (parent)
             emit parent->open_interpreter(path);
     }
@@ -654,7 +654,7 @@ void DirView::run(QStringList fnames)
     if (fnames.isEmpty())
         fnames = get_selected_filenames();
     foreach (QString fname, fnames) {
-        Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+        Explorer* parent = qobject_cast<Explorer*>(parent_widget);
         if (parent)
             emit parent->run(fname);
     }
@@ -693,13 +693,13 @@ int DirView::delete_file(const QString &fname, bool multiple, int yes_to_all)
     try {
         if (info.isFile()) {
             misc::remove_file(fname);
-            Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+            Explorer* parent = qobject_cast<Explorer*>(parent_widget);
             if (parent)
                 emit parent->removed(fname);
         }
         else {
             this->remove_tree(fname);
-            Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+            Explorer* parent = qobject_cast<Explorer*>(parent_widget);
             if (parent)
                 emit parent->removed_tree(fname);
         }
@@ -772,12 +772,12 @@ QString DirView::rename_file(const QString &fname)
         try {
             misc::rename_file(fname, path);
             if (info.isFile()) {
-                Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+                Explorer* parent = qobject_cast<Explorer*>(parent_widget);
                 if (parent)
                     emit parent->renamed(fname, path);
             }
             else {
-                Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+                Explorer* parent = qobject_cast<Explorer*>(parent_widget);
                 if (parent)
                     emit parent->renamed_tree(fname, path);
             }
@@ -818,7 +818,7 @@ void DirView::move(QStringList fnames, const QString &directory)
     QString orig = info.absolutePath();
     QString folder;
     while (true) {
-        Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+        Explorer* parent = qobject_cast<Explorer*>(parent_widget);
         if (parent)
             emit parent->redirect_stdio(false);
         if (directory.isEmpty())
@@ -909,7 +909,7 @@ QString DirView::create_new_file(QString current_path, const QString &title, con
     QFileInfo info(current_path);
     if (info.isFile())
         current_path = info.absolutePath();
-    Explorer* parent = dynamic_cast<Explorer*>(parent_widget);
+    Explorer* parent = qobject_cast<Explorer*>(parent_widget);
     if (parent)
         emit parent->redirect_stdio(false);
     QString fname = QFileDialog::getSaveFileName(this,title,current_path,filters);
@@ -958,7 +958,7 @@ void DirView::new_module(QString basedir)
     QString filters = "Python scripts (*.py *.pyw *.ipy)";
 
     std::function<void(QString)> create_func = [this](QString fname)
-    {Explorer* parent = dynamic_cast<Explorer*>(this->parent_widget);
+    {Explorer* parent = qobject_cast<Explorer*>(this->parent_widget);
     if (parent)
         emit parent->create_module(fname);};
 
@@ -1236,8 +1236,8 @@ QList<QObject*> ExplorerTreeWidget::setup_common_actions()
 //@Slot(bool)
 void ExplorerTreeWidget::toggle_show_cd_only(bool checked)
 {
-    ExplorerWidget* widget1 = dynamic_cast<ExplorerWidget*>(parent_widget);
-    ProjectExplorerWidget* widget2 = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+    ExplorerWidget* widget1 = qobject_cast<ExplorerWidget*>(parent_widget);
+    ProjectExplorerWidget* widget2 = qobject_cast<ProjectExplorerWidget*>(parent_widget);
     if (widget1)
         emit widget1->sig_option_changed("show_cd_only", checked);
     else if (widget2)
@@ -1352,8 +1352,8 @@ void ExplorerTreeWidget::chdir(QString directory, bool browsing_history)
     //bool ok = QDir::setCurrent(directory);
     bool ok = true;
     if (ok) {
-        ExplorerWidget* widget1 = dynamic_cast<ExplorerWidget*>(parent_widget);
-        //ProjectExplorerWidget* widget2 = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+        ExplorerWidget* widget1 = qobject_cast<ExplorerWidget*>(parent_widget);
+        //ProjectExplorerWidget* widget2 = qobject_cast<ProjectExplorerWidget*>(parent_widget);
         if (widget1)
             emit widget1->open_dir(directory);
         this->refresh(directory, true);

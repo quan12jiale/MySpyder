@@ -223,13 +223,16 @@ static QList<QTreeWidgetItem*> get_item_children(QTreeWidgetItem* item)
 
     QList<TreeItem*> tmp;
     foreach (QTreeWidgetItem* child, children) {
-        tmp.append(dynamic_cast<TreeItem*>(child));
+		if (TreeItem* treeitem = dynamic_cast<TreeItem*>(child))
+		{
+			tmp.append(treeitem);
+		}
     }
     std::sort(tmp.begin(),tmp.end(),
           [](TreeItem* item1,TreeItem* item2) { return item1->line < item2->line; });
     QList<QTreeWidgetItem*> res;
-    foreach (auto child, tmp) {
-        res.append(dynamic_cast<QTreeWidgetItem*>(child));
+    foreach (TreeItem* child, tmp) {
+        res.append(static_cast<QTreeWidgetItem*>(child));
     }
     return res;
 }
@@ -681,7 +684,7 @@ void OutlineExplorerTreeWidget::activated(QTreeWidgetItem *item)
         line = treeitem->line;
     FileRootItem* root_item = dynamic_cast<FileRootItem*>(get_root_item(item));
     freeze = true;
-    OutlineExplorerWidget* outlineparent = dynamic_cast<OutlineExplorerWidget*>(parent());
+    OutlineExplorerWidget* outlineparent = qobject_cast<OutlineExplorerWidget*>(parent());
     if (line)
         emit outlineparent->edit_goto(root_item->path, line, item->text(0));
     else
@@ -734,7 +737,7 @@ OutlineExplorerWidget::OutlineExplorerWidget(QWidget* parent,bool show_fullpath,
 
     QHBoxLayout* btn_layout = new QHBoxLayout;
     btn_layout->setAlignment(Qt::AlignLeft);
-    foreach (auto btn, setup_buttons()) {
+    foreach (QToolButton* btn, setup_buttons()) {
         btn_layout->addWidget(btn);
     }
     QVBoxLayout* layout = create_plugin_layout(btn_layout, treewidget);

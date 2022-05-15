@@ -26,7 +26,7 @@ QList<QObject*> ProjectsExplorerTreeWidget::setup_common_actions()
 
 void ProjectsExplorerTreeWidget::toggle_hscrollbar(bool checked)
 {
-    ProjectExplorerWidget* widget = dynamic_cast<ProjectExplorerWidget*>(parent_widget);
+    ProjectExplorerWidget* widget = qobject_cast<ProjectExplorerWidget*>(parent_widget);
     if (widget)
         emit widget->sig_option_changed("show_hscrollbar", checked);
     this->show_hscrollbar = checked;

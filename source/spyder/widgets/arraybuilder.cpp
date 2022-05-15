@@ -28,7 +28,7 @@ void NumpyArrayInline::keyPressEvent(QKeyEvent *event)
 bool NumpyArrayInline::event(QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key()==Qt::Key_Tab || keyEvent->key()==Qt::Key_Escape) {
             QString text = this->text();
             int cursor = cursorPosition();
@@ -236,7 +236,7 @@ void NumpyArrayDialog::keyPressEvent(QKeyEvent *event)
 bool NumpyArrayDialog::event(QEvent *event)
 {
     if (event->type() == QEvent::KeyPress) {
-        QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
         if (keyEvent->key() == Qt::Key_Tab) {
             return false;
         }
@@ -255,11 +255,11 @@ void NumpyArrayDialog::process_text(bool array)
     QString suffix = "]])";
     QString values;
     if (inline_flag) {
-        NumpyArrayInline * arrayInline = dynamic_cast<NumpyArrayInline*>(_widget);
+        NumpyArrayInline * arrayInline = qobject_cast<NumpyArrayInline*>(_widget);
         values = arrayInline->text().trimmed();
     }
     else {
-        NumpyArrayTable * arrayTable = dynamic_cast<NumpyArrayTable*>(_widget);
+        NumpyArrayTable * arrayTable = qobject_cast<NumpyArrayTable*>(_widget);
         values = arrayTable->text().trimmed();
     }
 

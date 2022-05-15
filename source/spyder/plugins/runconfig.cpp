@@ -348,7 +348,7 @@ BaseRunConfigDialog::BaseRunConfigDialog(QWidget* parent)
 
 void BaseRunConfigDialog::add_widgets(const QList<QPair<int, QWidget *> > &widgets_or_spacings)
 {
-    QBoxLayout* layout = dynamic_cast<QBoxLayout*>(this->layout());
+    QBoxLayout* layout = qobject_cast<QBoxLayout*>(this->layout());
     Q_ASSERT(layout);
     foreach (auto pair, widgets_or_spacings) {
         if (pair.second == nullptr)
@@ -368,7 +368,7 @@ void BaseRunConfigDialog::add_button_box(QDialogButtonBox::StandardButtons stdbt
     QHBoxLayout* btnlayout = new QHBoxLayout;
     btnlayout->addStretch(1);
     btnlayout->addWidget(bbox);
-    QBoxLayout* layout = dynamic_cast<QBoxLayout*>(this->layout());
+    QBoxLayout* layout = qobject_cast<QBoxLayout*>(this->layout());
     Q_ASSERT(layout);
     layout->addLayout(btnlayout);
 }
@@ -491,7 +491,7 @@ void RunConfigDialog::accept()
     for (int index = 0; index < this->stack->count(); ++index) {
         QString filename = this->combo->itemText(index);
         QWidget* widget = this->stack->widget(index);
-        RunConfigOptions* runconfigoptions = dynamic_cast<RunConfigOptions*>(widget);
+        RunConfigOptions* runconfigoptions = qobject_cast<RunConfigOptions*>(widget);
         Q_ASSERT(runconfigoptions);
         if (index == this->stack->currentIndex() &&
                 !runconfigoptions->is_valid())
