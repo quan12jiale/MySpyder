@@ -225,7 +225,7 @@ void MainWindow::setup()
     toggle_next_layout_action->setShortcutContext(Qt::ApplicationShortcut);
     this->register_shortcut(toggle_next_layout_action, "_", "Use next layout");
 
-    toggle_previous_layout_action = new QAction("Use next layout", this);
+    toggle_previous_layout_action = new QAction("Use previous layout", this);
     connect(toggle_previous_layout_action, SIGNAL(triggered()), SLOT(toggle_previous_layout()));
     toggle_previous_layout_action->setShortcutContext(Qt::ApplicationShortcut);
     this->register_shortcut(toggle_previous_layout_action, "_", "Use previous layout");
