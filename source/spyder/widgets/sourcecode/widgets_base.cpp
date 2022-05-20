@@ -573,6 +573,7 @@ void TextEditBaseWidget::copy()
 void TextEditBaseWidget::keyPressEvent(QKeyEvent *event)
 {
     QString text = event->text();
+	Q_UNUSED(text);
     int key = event->key();
     Qt::KeyboardModifiers ctrl = event->modifiers() & Qt::ControlModifier;
     Qt::KeyboardModifiers meta = event->modifiers() & Qt::MetaModifier;

@@ -3441,6 +3441,7 @@ void CodeEditor::contextMenuEvent(QContextMenuEvent *event)
     if (text.size() == 0) {
         cursor.select(QTextCursor::WordUnderCursor);
         text = cursor.selectedText();
+		Q_UNUSED(text);
     }
     this->undo_action->setEnabled(this->document()->isUndoAvailable());
     this->redo_action->setEnabled(this->document()->isRedoAvailable());

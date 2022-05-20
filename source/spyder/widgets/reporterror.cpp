@@ -76,6 +76,7 @@ void DescriptionWidget::cut()
 void DescriptionWidget::keyPressEvent(QKeyEvent *event)
 {
     QString text = event->text();
+	Q_UNUSED(text);
     int key = event->key();
     Qt::KeyboardModifiers ctrl = event->modifiers() & Qt::ControlModifier;
 

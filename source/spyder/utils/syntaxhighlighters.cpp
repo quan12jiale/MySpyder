@@ -593,6 +593,7 @@ void CppSH::highlightBlock(const QString &text)
                 int start = match.capturedStart(key);
                 int end = match.capturedEnd(key);
                 index += end-start;
+				Q_UNUSED(index);
                 if (key == "comment_start") {
                     inside_comment = true;
                     this->setFormat(start, text.size()-start,

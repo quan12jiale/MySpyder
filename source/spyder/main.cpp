@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 	QStringList add_kw = QStringList();
 	add_kw << "async" << "await";
 	QString pattern = sh::make_python_patterns(add_kw);
+	Q_UNUSED(pattern);
 
     return a.exec();
 }

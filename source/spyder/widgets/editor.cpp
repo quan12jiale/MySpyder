@@ -518,8 +518,10 @@ void TabSwitcherWidget::load_data()
 
 void TabSwitcherWidget::item_selected(QListWidgetItem* item)
 {
-    if (item == nullptr)
+    if (item == nullptr) {
         item = this->currentItem();
+		Q_UNUSED(item);
+	}
     int len = stack_history.len();
     // stack history is in inverse order
     int index = stack_history.getitem(len - (this->currentRow()+1));

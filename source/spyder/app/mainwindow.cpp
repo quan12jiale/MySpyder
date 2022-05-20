@@ -1965,6 +1965,7 @@ void MainWindow::global_callback()
 #if 1
 	std::string method_name = callback.toStdString();
 	bool success = QMetaObject::invokeMethod(widget, method_name.c_str());
+	Q_UNUSED(success);
 	method_name.clear();
 #else
     TextEditBaseWidget* base_widget = qobject_cast<TextEditBaseWidget*>(widget);

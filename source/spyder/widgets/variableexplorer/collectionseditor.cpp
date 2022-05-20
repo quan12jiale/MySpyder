@@ -348,7 +348,7 @@ bool CollectionsModel::setData(const QModelIndex &index, const QVariant &value, 
     if (index.column() < 3)
         return false;
     QVariant res = display_to_value(value, get_value(index));
-    set_value(index, value);
+    set_value(index, res);
     emit dataChanged(index, index);
     return true;
 }
