@@ -207,7 +207,7 @@ TreeNode* TreeNode::remove_interval_helper(const Interval& interval, QList<int>&
 		else
 		{
 			QString structure = this->print_structure();
-			throw std::exception("KeyError");
+			throw std::runtime_error("KeyError");
 		}
 		if (!this->s_center.isEmpty())
 		{
@@ -224,7 +224,7 @@ TreeNode* TreeNode::remove_interval_helper(const Interval& interval, QList<int>&
 		{
 			if (should_raise_error)
 			{
-				throw std::exception("ValueError");
+				throw std::runtime_error("ValueError");
 			}
 			done.append(1);
 			return this;

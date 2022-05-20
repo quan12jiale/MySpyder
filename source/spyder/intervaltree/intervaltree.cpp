@@ -25,7 +25,7 @@ IntervalTree::IntervalTree(const QList<Interval>& interval_list /*= QList<Interv
 		if (iv.is_null())
 		{
 			QString strError = strErrorArg.arg(iv.repr());
-			throw std::exception(strError.toStdString().c_str());
+			throw std::runtime_error(strError.toStdString());
 		}
 	}
 	this->top_node = TreeNode::from_intervals(this->all_intervals.toList());
