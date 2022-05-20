@@ -900,7 +900,7 @@ void MainWindow::setup_layout(bool _default)
     foreach (SpyderPluginMixin* plugin, this->widgetlist) {
         try {
             plugin->initialize_plugin_in_mainwindow_layout();
-        } catch (std::exception error) {
+        } catch (const std::exception& error) {
             qDebug() << __FILE__ << __LINE__ << error.what();
         }
     }

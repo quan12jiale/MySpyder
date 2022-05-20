@@ -704,7 +704,7 @@ int DirView::delete_file(const QString &fname, bool multiple, int yes_to_all)
                 emit parent->removed_tree(fname);
         }
         return yes_to_all;
-    } catch (std::exception error) {
+    } catch (const std::exception& error) {
         QString action_str = "delete";
         QMessageBox::critical(this, "Project Explorer",
                               QString("<b>Unable to %1 <i>%2</i></b><br><br>Error message:<br>%3")
@@ -782,7 +782,7 @@ QString DirView::rename_file(const QString &fname)
                     emit parent->renamed_tree(fname, path);
             }
             return path;
-        } catch (std::exception error) {
+        } catch (const std::exception& error) {
             QMessageBox::critical(this, "Rename",
                                   QString("<b>Unable to rename file <i>%1</i></b>"
                                           "<br><br>Error message:<br>%2").
@@ -841,7 +841,7 @@ void DirView::move(QStringList fnames, const QString &directory)
         QString basename = fileinfo.fileName();
         try {
             misc::move_file(fname, folder+'/'+basename);
-        } catch (std::exception error) {
+        } catch (const std::exception& error) {
             QMessageBox::critical(this, "Error",
                                   QString("<b>Unable to move <i>%1</i></b>"
                                           "<br><br>Error message:<br>%2")
@@ -919,7 +919,7 @@ QString DirView::create_new_file(QString current_path, const QString &title, con
         try {
             create_func(fname);
             return fname;
-        } catch (std::exception error) {
+        } catch (const std::exception& error) {
             QMessageBox::critical(this, "New file",
                                   QString("<b>Unable to create file <i>%1</i>"
                                           "</b><br><br>Error message:<br>%2")

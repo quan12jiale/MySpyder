@@ -119,7 +119,7 @@ void ProjectsExplorerTreeWidget::dropEvent(QDropEvent *event)
                 //    TODO
                 //emit this->parent_widget->removed(src);
             }
-        } catch (std::exception error) {
+        } catch (const std::exception& error) {
             QString action_str;
             if (action == Qt::CopyAction)
                 action_str = "copy";
