@@ -847,14 +847,14 @@ QString ResultsBrowser::html_escape(const QString &text)
 QString ResultsBrowser::truncate_result(const QString &line, int start, int end)
 {
     QString ellipsis = "...";
-    int max_line_length = 80;
-    int max_num_char_fragment = 40;
+    const int max_line_length = 80;
 
     QString left = line.left(start);
     QString match = line.mid(start, end-start);
     QString right = line.mid(end);
 
     if (line.size() > max_line_length) {
+		const int max_num_char_fragment = 40;
         int offset = (line.size() - match.size()) / 2;
 
         QStringList left_list = left.split(' ');

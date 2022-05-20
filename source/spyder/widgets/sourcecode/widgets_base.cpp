@@ -439,13 +439,14 @@ int TextEditBaseWidget::find_brace_match(int position,
     }
 
     while (true) {
-        int i_close, i_open;
+        int i_close;
         if (forward)
             i_close = text.indexOf(bracemap[brace], i_start_close);
         else
             // python中str.rfind(char,0,len)对应qstring.lastIndexOf(char,len-1);
             i_close = text.lastIndexOf(bracemap[brace], i_start_close);
         if (i_close > -1) {
+			int i_open;
             if (forward) {
                 i_start_close = i_close+1;
                 i_open = text.left(i_close).indexOf(brace, i_start_open);

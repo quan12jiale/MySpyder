@@ -16,7 +16,7 @@ struct ColorBoolBool {
     bool bold;
     bool italic;
     ColorBoolBool() = default;
-    ColorBoolBool(const QString& _color,bool _bold=false,bool _italic=false)
+    explicit ColorBoolBool(const QString& _color,bool _bold=false,bool _italic=false)
         : color(_color),bold(_bold),italic(_italic){}
     friend QDataStream &operator<<(QDataStream &out, const ColorBoolBool &obj)
     {
