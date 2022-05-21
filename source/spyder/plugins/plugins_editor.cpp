@@ -1590,14 +1590,13 @@ QString _convert(QString fname)
 {
     QFileInfo info(fname);
     fname = info.absoluteFilePath();
-    if (os::name == "nt" && fname.size() == 2 && fname[1] == '.')
+    if (os::name == "nt" && fname.size() >= 2 && fname[1] == ':')
         fname = fname[0].toUpper() + fname.mid(1);
     return fname;
 }
 
 void Editor::load()
 {
-
     CodeEditor* editor0 = this->get_current_editor();
     int position0 = 0;
     QString filename0;
