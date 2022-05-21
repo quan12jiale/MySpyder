@@ -27,11 +27,11 @@ signals:
     void breakpoints_saved();
     void run_in_current_extconsole(QString, QString, QString, bool, bool);
     void open_file_update(const QString&);
-public:
+private:
     QString TEMPFILE_PATH;
     QString TEMPLATE_PATH;
 
-public:
+private:
     bool __set_eol_chars;
 
     Projects* projects;
@@ -41,12 +41,14 @@ public:
     QList<QAction*> file_dependent_actions;
     QList<QAction*> pythonfile_dependent_actions;
     QList<QAction*> dock_toolbar_actions;
+public:
     QList<QObject*> edit_menu_actions;
     QList<QAction*> stack_menu_actions;
 
     bool __first_open_files_setup;
     QList<EditorStack*> editorstacks;
     QHash<QWidget*, EditorStack*> last_focus_editorstack;//1214,1217行说明键可能是this
+private:
     QList<EditorMainWindow*> editorwindows;
     QList<LayoutSettings> editorwindows_to_be_created;
     QList<StrStrActions> toolbar_list;
@@ -176,11 +178,12 @@ public:
 
     void load(QString filename, int _goto=-1, QString word="",
               QWidget* editorwin=nullptr, bool processevents=true);
+private:
     void load(QStringList filenames, int _goto=-1, QString word="",
               QWidget* editorwin=nullptr, bool processevents=true);
 
 
-
+public:
     void close_file_from_name(QString filename);
 
 
@@ -305,8 +308,10 @@ public slots:
     void re_run_last_cell();//
 
     void toggle_show_blanks(bool checked);
-    void load();
 
+private slots:
+    void load();
+public slots:
     void switch_to_plugin(){SpyderPluginMixin::switch_to_plugin();}
     virtual void starting_long_process(const QString& message){SpyderPluginMixin::starting_long_process(message);}
     virtual void ending_long_process(const QString& message=""){SpyderPluginMixin::ending_long_process(message);}
