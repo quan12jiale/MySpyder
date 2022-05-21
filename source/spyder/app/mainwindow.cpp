@@ -208,8 +208,9 @@ void MainWindow::setup()
     this->register_shortcut(close_dockwidget_action, "_", "Close pane");
 #if 1
 	lock_dockwidgets_action = create_action(this, "Lock panes",
+		nullptr,
 		QString(), QIcon(), QString(), 
-		SLOT(toggle_lock_dockwidgets(bool)), nullptr, 
+		SLOT(toggle_lock_dockwidgets(bool)),
 		QString(), QAction::NoRole, 
 		Qt::ApplicationShortcut);
 #else
@@ -253,8 +254,9 @@ void MainWindow::setup()
 		const QStringList textseq = text.split(' ');
 		QString method_name = textseq[0].toLower() + textseq.mid(1).join("");
 		QAction* action = create_action(this, tr_text,
+			SLOT(global_callback()),
 			QString(), icon, QString(),
-			nullptr, SLOT(global_callback()),
+			nullptr,
 			method_name, QAction::NoRole,
 			Qt::WidgetShortcut);
 		this->register_shortcut(action, "Editor", text);
@@ -353,8 +355,9 @@ void MainWindow::setup()
     this->register_shortcut(prefs_action, "_", "Preferences", true);
 #if 1
 	QAction* spyder_path_action = create_action(this, "PYTHONPATH manager", 
+		SLOT(path_manager_callback()),
 		QString(), ima::icon("pythonpath"), "Python Path Manager", 
-		nullptr, SLOT(path_manager_callback()), 
+		nullptr,
 		QString(), QAction::ApplicationSpecificRole);
 #else
     QAction* spyder_path_action = new QAction(ima::icon("pythonpath"), "PYTHONPATH manager", this);
@@ -507,8 +510,8 @@ void MainWindow::setup()
     //triggered=this->help.show_tutorial
 #if 1
 	QAction* shortcuts_action = create_action(this, "Shortcuts Summary", 
-		"Meta+F1", QIcon(), QString(), 
-		nullptr, SLOT(show_shortcuts_dialog()));
+		SLOT(show_shortcuts_dialog()),
+		"Meta+F1");
 #else
     QAction* shortcuts_action = new QAction("Shortcuts Summary", this);
     shortcuts_action->setShortcut(QKeySequence("Meta+F1"));

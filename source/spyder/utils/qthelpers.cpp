@@ -111,9 +111,10 @@ void toggle_actions(const QList<QAction*>& actions, bool enable)
 }
 
 QAction* create_action(QObject* parent, const QString& text, 
+	const char* triggeredSlot /*= nullptr*/,
 	const QString& shortcut /*= QString()*/, 
 	const QIcon& icon /*= QIcon()*/, const QString& tip /*= QString()*/, 
-	const char* toggledSlot /*= nullptr*/, const char* triggeredSlot /*= nullptr*/,
+	const char* toggledSlot /*= nullptr*/,
 	const QString& data /*= QString()*/, QAction::MenuRole menurole /*= QAction::NoRole*/, 
 	Qt::ShortcutContext context /*= Qt::WindowShortcut*/)
 {

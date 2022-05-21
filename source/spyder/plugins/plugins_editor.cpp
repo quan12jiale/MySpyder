@@ -318,12 +318,20 @@ QList<QAction*> Editor::get_plugin_actions()
     this->open_last_closed_action->setToolTip("Open last closed");
     connect(open_last_closed_action, SIGNAL(triggered()), this, SLOT(open_last_closed()));
     this->register_shortcut(open_last_closed_action, "Editor", "Open last closed");
-
+#if 1
+	this->open_action = create_action(this, "&Open...",
+		SLOT(load()),
+		QString(), ima::icon("fileopen"), "Open file", 
+		nullptr,
+		QString(), QAction::NoRole, 
+		Qt::WidgetShortcut);
+#else
     this->open_action = new QAction("&Open...", this);
     this->open_action->setIcon(ima::icon("fileopen"));
     this->open_action->setToolTip("Open file");
     connect(open_action, SIGNAL(triggered()), this, SLOT(load()));
     this->open_action->setShortcutContext(Qt::WidgetShortcut);
+#endif
     this->register_shortcut(open_action, "Editor", "Open file", true);
 
     this->revert_action = new QAction("&Revert", this);
@@ -1556,10 +1564,17 @@ void Editor::update_recent_file_menu()
     this->recent_file_menu->clear();
     if (!recent_files.isEmpty()) {
         foreach (QString fname, recent_files) {
+#if 1
+			QAction* action = create_action(this, fname,
+				SLOT(load()), QString(),
+				ima::icon("FileIcon"), QString(),
+				nullptr, fname);
+#else
             QAction* action = new QAction(fname, this);
             action->setIcon(ima::icon("FileIcon"));
             connect(action, SIGNAL(triggered()), this, SLOT(load()));
             action->setData(fname);
+#endif
             this->recent_file_menu->addAction(action);
         }
     }
