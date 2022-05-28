@@ -62,8 +62,9 @@ MemoryStatus::MemoryStatus(QWidget* parent, QStatusBar* statusbar)
 
 DWORD memory_usage()
 {
-    MEMORYSTATUS memorystatus;
-    GlobalMemoryStatus(&memorystatus);
+    MEMORYSTATUSEX memorystatus;
+	memorystatus.dwLength = sizeof(MEMORYSTATUSEX);
+    GlobalMemoryStatusEx(&memorystatus);
     return memorystatus.dwMemoryLoad;
 }
 

@@ -415,12 +415,16 @@ bool CallTipWidget::show_tip(QPoint point, const QString &tip, QStringList wrapp
 QPair<int,int> CallTipWidget::_find_parenthesis(int position, bool forward)
 {
     int commas=0, depth = 0;
-    QTextDocument* document;
+    QTextDocument* document = nullptr;
     if (_text_edit)
         document = _text_edit->document();
     else if (_plain_edit) {
         document = _plain_edit->document();
     }
+	if (!document)
+	{
+		return qMakePair(position, commas);
+	}
     QChar _char = document->characterAt(position);
 
     int breakflag = 1;
