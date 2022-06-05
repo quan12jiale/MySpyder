@@ -1566,18 +1566,8 @@ void MainWindow::moveEvent(QMoveEvent *event)
 void MainWindow::hideEvent(QHideEvent *event)
 {
     foreach (SpyderPluginMixin* plugin, this->widgetlist) {
-        Editor* editor = dynamic_cast<Editor*>(plugin);
-        OutlineExplorer* outlineexplorer = dynamic_cast<OutlineExplorer*>(plugin);
-        Explorer* explorer = dynamic_cast<Explorer*>(plugin);
-        FindInFiles* findinfiles = dynamic_cast<FindInFiles*>(plugin);
-
-        if (editor && editor->isAncestorOf(last_focused_widget))
-            plugin->visibility_changed(true);
-        else if (outlineexplorer && outlineexplorer->isAncestorOf(last_focused_widget))
-            plugin->visibility_changed(true);
-        else if (explorer && explorer->isAncestorOf(last_focused_widget))
-            plugin->visibility_changed(true);
-        else if (findinfiles && findinfiles->isAncestorOf(last_focused_widget))
+		QWidget* pwidget = dynamic_cast<QWidget*>(plugin);
+        if (pwidget && pwidget->isAncestorOf(this->last_focused_widget))
             plugin->visibility_changed(true);
     }
     QMainWindow::hideEvent(event);
@@ -1644,28 +1634,9 @@ void MainWindow::close_current_dockwidget()
     if (!widget)
         return;
     foreach (SpyderPluginMixin* plugin, this->widgetlist) {
-        Editor* editor = dynamic_cast<Editor*>(plugin);
-        OutlineExplorer* outlineexplorer = dynamic_cast<OutlineExplorer*>(plugin);
-        Explorer* explorer = dynamic_cast<Explorer*>(plugin);
-        FindInFiles* findinfiles = dynamic_cast<FindInFiles*>(plugin);
-
-        if (editor && editor->isAncestorOf(widget)) {
-            plugin->visibility_changed(true);
-            plugin->dockwidget->hide();
-            break;
-        }
-        else if (outlineexplorer && outlineexplorer->isAncestorOf(widget)) {
-            plugin->visibility_changed(true);
-            plugin->dockwidget->hide();
-            break;
-        }
-        else if (explorer && explorer->isAncestorOf(widget)) {
-            plugin->visibility_changed(true);
-            plugin->dockwidget->hide();
-            break;
-        }
-        else if (findinfiles && findinfiles->isAncestorOf(widget)) {
-            plugin->visibility_changed(true);
+		QWidget* pwidget = dynamic_cast<QWidget*>(plugin);
+        if (pwidget && pwidget->isAncestorOf(widget)) {
+            plugin->visibility_changed(true);//TODO python源码中没有这一行，不记得我什么时候加上的
             plugin->dockwidget->hide();
             break;
         }
@@ -1708,39 +1679,8 @@ void MainWindow::maximize_dockwidget(bool restore)
         QWidget* focus_widget = QApplication::focusWidget();
         foreach (SpyderPluginMixin* plugin, this->widgetlist) {
             plugin->dockwidget->hide();
-
-            /*
-             *     WorkingDirectory* workingdirectory;
-    Editor* editor;
-
-    Projects* projects;
-    OutlineExplorer* outlineexplorer;
-    Explorer* explorer;
-    HistoryLog* historylog;
-    FindInFiles* findinfiles;*/
-            WorkingDirectory* workingdirectory = dynamic_cast<WorkingDirectory*>(plugin);
-            Editor* editor = dynamic_cast<Editor*>(plugin);
-
-            Projects* projects = dynamic_cast<Projects*>(plugin);
-            OutlineExplorer* outlineexplorer = dynamic_cast<OutlineExplorer*>(plugin);
-            Explorer* explorer = dynamic_cast<Explorer*>(plugin);
-            HistoryLog* historylog = dynamic_cast<HistoryLog*>(plugin);
-            FindInFiles* findinfiles = dynamic_cast<FindInFiles*>(plugin);
-
-            if (workingdirectory && workingdirectory->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-            else if (editor && editor->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-
-            else if (projects && projects->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-            else if (outlineexplorer && outlineexplorer->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-            else if (explorer && explorer->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-            else if (historylog && historylog->isAncestorOf(focus_widget))
-                this->last_plugin = plugin;
-            else if (findinfiles && findinfiles->isAncestorOf(focus_widget))
+			QWidget* pwidget = dynamic_cast<QWidget*>(plugin);
+            if (pwidget && pwidget->isAncestorOf(focus_widget))
                 this->last_plugin = plugin;
         }
 
@@ -1748,82 +1688,28 @@ void MainWindow::maximize_dockwidget(bool restore)
             this->last_plugin = this->editor;
 
         this->last_plugin->dockwidget->toggleViewAction()->setDisabled(true);
-
-        WorkingDirectory* workingdirectory = dynamic_cast<WorkingDirectory*>(this->last_plugin);
-        Editor* editor = dynamic_cast<Editor*>(this->last_plugin);
-
-        Projects* projects = dynamic_cast<Projects*>(this->last_plugin);
-        OutlineExplorer* outlineexplorer = dynamic_cast<OutlineExplorer*>(this->last_plugin);
-        Explorer* explorer = dynamic_cast<Explorer*>(this->last_plugin);
-        HistoryLog* historylog = dynamic_cast<HistoryLog*>(this->last_plugin);
-        FindInFiles* findinfiles = dynamic_cast<FindInFiles*>(this->last_plugin);
-
-        if (workingdirectory) {
-            this->setCentralWidget(workingdirectory);
-            workingdirectory->show();
+		QWidget* pwidget = dynamic_cast<QWidget*>(this->last_plugin);
+        if (pwidget) {
+            this->setCentralWidget(pwidget);
         }
-        else if (editor) {
-            this->setCentralWidget(editor);
-            editor->show();
-        }
-
-        else if (projects) {
-            this->setCentralWidget(projects);
-            projects->show();
-        }
-        else if (outlineexplorer) {
-            this->setCentralWidget(outlineexplorer);
-            outlineexplorer->show();
-        }
-        else if (explorer) {
-            this->setCentralWidget(explorer);
-            explorer->show();
-        }
-        else if (historylog) {
-            this->setCentralWidget(historylog);
-            historylog->show();
-        }
-        else if (findinfiles) {
-            this->setCentralWidget(findinfiles);
-            findinfiles->show();
-        }
-
         this->last_plugin->ismaximized = true;
 
         // Workaround to solve an issue with editor's outline explorer:
+		if (pwidget) {
+			pwidget->show();
+		}
         this->last_plugin->visibility_changed(true);
-        if (this->last_plugin == this->editor) {
+        if (this->last_plugin == static_cast<SpyderPluginMixin*>(this->editor)) {
+			// Automatically show the outline if the editor was maximized:
             this->addDockWidget(Qt::RightDockWidgetArea,
                                 this->outlineexplorer->dockwidget);
             this->outlineexplorer->dockwidget->show();
         }
     }
     else {
-        WorkingDirectory* workingdirectory = dynamic_cast<WorkingDirectory*>(this->last_plugin);
-        Editor* editor = dynamic_cast<Editor*>(this->last_plugin);
-
-        Projects* projects = dynamic_cast<Projects*>(this->last_plugin);
-        OutlineExplorer* outlineexplorer = dynamic_cast<OutlineExplorer*>(this->last_plugin);
-        Explorer* explorer = dynamic_cast<Explorer*>(this->last_plugin);
-        HistoryLog* historylog = dynamic_cast<HistoryLog*>(this->last_plugin);
-        FindInFiles* findinfiles = dynamic_cast<FindInFiles*>(this->last_plugin);
-
-        if (workingdirectory)
-            this->last_plugin->dockwidget->setWidget(workingdirectory);
-        else if (editor)
-            this->last_plugin->dockwidget->setWidget(editor);
-
-        else if (projects)
-            this->last_plugin->dockwidget->setWidget(projects);
-        else if (outlineexplorer)
-            this->last_plugin->dockwidget->setWidget(outlineexplorer);
-        else if (explorer)
-            this->last_plugin->dockwidget->setWidget(explorer);
-        else if (historylog)
-            this->last_plugin->dockwidget->setWidget(historylog);
-        else if (findinfiles)
-            this->last_plugin->dockwidget->setWidget(findinfiles);
-
+		QWidget* pwidget = dynamic_cast<QWidget*>(this->last_plugin);
+        if (pwidget)
+            this->last_plugin->dockwidget->setWidget(pwidget);
         this->last_plugin->dockwidget->toggleViewAction()->setEnabled(true);
         this->setCentralWidget(nullptr);
         this->last_plugin->ismaximized = false;

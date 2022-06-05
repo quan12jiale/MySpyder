@@ -908,7 +908,7 @@ std::pair<QWidget*, QDockWidget*> AnimatedTour::_process_widgets(
 	{
 		return {nullptr, nullptr};
 	}
-	auto pwidget = dynamic_cast<QWidget*>(temp);
+	QWidget* pwidget = dynamic_cast<QWidget*>(temp);
 	if (names.contains("get_current_editor()"))
 	{
 		Editor* pEditor = dynamic_cast<Editor*>(temp);
