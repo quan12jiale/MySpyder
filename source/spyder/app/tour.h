@@ -58,7 +58,7 @@ private:
 	int duration_fadeout;
 	QEasingCurve::Type easing_curve_in;
 	QEasingCurve::Type easing_curve_out;
-	std::unique_ptr<QGraphicsOpacityEffect> effect = nullptr;
+	QGraphicsOpacityEffect* effect = nullptr;
 	std::unique_ptr<QPropertyAnimation> anim = nullptr;
 
 	bool _fade_running = false;

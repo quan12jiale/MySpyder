@@ -186,9 +186,9 @@ void FadingDialog::_set_fade_finished()
 void FadingDialog::_fade_setup()
 {
 	this->_fade_running = true;
-	this->effect = std::make_unique<QGraphicsOpacityEffect>(this);
-	this->setGraphicsEffect(this->effect.get());
-	this->anim = std::make_unique<QPropertyAnimation>(this->effect.get(), QByteArray("opacity"));
+	this->effect = new QGraphicsOpacityEffect(this);
+	this->setGraphicsEffect(this->effect);//QWidget takes ownership of effect.
+	this->anim = std::make_unique<QPropertyAnimation>(this->effect, QByteArray("opacity"));
 }
 
 void FadingDialog::fade_in(QObject* receiver, const char* on_finished_connect)
@@ -489,7 +489,7 @@ FadingTipBox::FadingTipBox(MainWindow* parent,
 	this->combobox_background = combobox_background;
 	const QString style = "QComboBox {{"
 					"padding-left: 5px;"
-					"background-color: %1"
+					"background-color: %1;"
 					"border-width : 0px;"
 					"border-radius: 0px;"
 					"min-height:20px;"
@@ -1163,7 +1163,7 @@ void AnimatedTour::_hiding()
 
 void AnimatedTour::run_code()
 {
-	// Not impl，需要使用到console
+	// TODO Not impl，需要使用到console
 }
 
 void AnimatedTour::set_tour(int index, const QMap<QString, QVariant >& frames,
@@ -1220,7 +1220,7 @@ void AnimatedTour::close_tour()
 		this->parent->tours_available[this->active_tour_index]["last"] = 
 			this->step_current;
 	}
-	catch (const std::exception& e)
+	catch (const std::exception&)
 	{
 		
 	}
