@@ -15,6 +15,7 @@
 #include "widgets/ipythonconsole/control.h"
 
 #include "plugins/maininterpreter.h"
+#include "app/tour.h"
 
 void set_opengl_implementation(const QString& option);
 void initialize();
@@ -190,8 +191,10 @@ public:
 
     QAction* wp_action;//723行
 
+	tour::AnimatedTour* tour;
     QMenu* tours_menu;//959行
     QList<QAction*> tour_menu_actions;
+	QList<QMap<QString, QVariant >> tours_available;
 
     QMenu* quick_layout_menu;
 
@@ -274,7 +277,6 @@ public:
     void apply_shortcuts();
     void start_open_files_server();
 
-    void show_tour(int index);
     void open_fileswitcher(bool symbol=false);
     void add_to_fileswitcher(Editor* plugin, BaseTabs* tabs, QList<FileInfo*> data, QIcon icon);
     void  _check_updates_ready();
@@ -285,6 +287,7 @@ public:
     void report_issue(const QString& body=QString(), const QString& title=QString(),
                       bool open_webpage=false);
 public slots:
+	void show_tour();// int index
     void toggle_previous_layout();
     void toggle_next_layout();
     void close_current_dockwidget();

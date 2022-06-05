@@ -429,6 +429,8 @@ void MainWindow::setup()
     this->set_splash("Loading editor...");
     this->editor = new Editor(this);
     this->editor->register_plugin();
+	auto plugin = static_cast<SpyderPluginMixin*>(this->editor);//该步转换是必须的：多继承下指针偏移
+	this->setProperty("editor", QVariant(reinterpret_cast<std::size_t>(plugin)));
 
     QAction* quit_action = new QAction(ima::icon("exit"), "&Quit", this);
     // triggered=this->console.quit
@@ -452,12 +454,16 @@ void MainWindow::setup()
         this->set_splash("Loading file explorer...");
         this->explorer = new Explorer(this);
         this->explorer->register_plugin();
+		auto plugin = static_cast<SpyderPluginMixin*>(this->explorer);
+		this->setProperty("explorer", QVariant(reinterpret_cast<std::size_t>(plugin)));
     }
 
     if (CONF_get("historylog", "enable").toBool()) {
         this->set_splash("Loading history plugin...");
         this->historylog = new HistoryLog(this);
         this->historylog->register_plugin();
+		auto plugin = static_cast<SpyderPluginMixin*>(this->historylog);
+		this->setProperty("historylog", QVariant(reinterpret_cast<std::size_t>(plugin)));
     }
 
     if (CONF_get("onlinehelp", "enable").toBool()) {
@@ -518,9 +524,20 @@ void MainWindow::setup()
     connect(shortcuts_action, SIGNAL(triggered()), SLOT(show_shortcuts_dialog()));
 #endif
     //from spyder.app import tour
-    // this->tour = tour.AnimatedTour(self)
+	this->tour = new tour::AnimatedTour(this);
     tours_menu = new QMenu("Interactive tours");
     tour_menu_actions.clear();
+	this->tours_available = tour::get_tours(0);
+	for (int i = 0; i < this->tours_available.size(); i++)
+	{
+		const QMap<QString, QVariant > tour_available = this->tours_available[i];
+		this->tours_available[i]["last"] = 0;//在spyder启动时将上次的索引设为0
+		QString tour_name = tour_available["name"].toString();
+
+		QAction* temp_action = create_action(this, tour_name,
+			SLOT(show_tour()));
+		tour_menu_actions << temp_action;
+	}
 
     tours_menu->addActions(tour_menu_actions);
 
@@ -2284,10 +2301,13 @@ void MainWindow::restart(bool reset)
     qDebug() << __func__;
 }
 
-void MainWindow::show_tour(int index)
+void MainWindow::show_tour()
 {
     this->maximize_dockwidget(true);
-    //frames = this->tours_available[index]
+	const int index = 0;
+	QMap<QString, QVariant > frames = this->tours_available[index];
+	this->tour->set_tour(index, frames, this);
+	this->tour->start_tour();
 }
 
 void MainWindow::open_fileswitcher(bool symbol)
