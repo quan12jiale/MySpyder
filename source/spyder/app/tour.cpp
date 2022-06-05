@@ -882,16 +882,12 @@ void AnimatedTour::_move_step()
 	this->tips->raise();
 }
 
-void AnimatedTour::_set_modal(bool value, const QList<QWidget*>& widgets)
+void AnimatedTour::_set_modal(bool value, const QList<QDialog*>& widgets)
 {
 #ifdef Q_OS_WIN
-	for (QWidget* widget : widgets)
+	for (QDialog* widget : widgets)
 	{
-		QDialog* dlg = qobject_cast<QDialog*>(widget);
-		if (dlg)
-		{
-			dlg->setModal(value);
-		}
+		widget->setModal(value);
 		widget->hide();
 		widget->show();
 	}
@@ -994,12 +990,12 @@ void AnimatedTour::_set_data()
 	{
 		bool interact = frame["interact"].toBool();
 		this->canvas->set_interaction(interact);
-		this->_set_modal(!interact, QList<QWidget*>() << this->tips);
+		this->_set_modal(!interact, QList<QDialog*>() << this->tips);
 	}
 	else
 	{
 		this->canvas->set_interaction(false);
-		this->_set_modal(true, QList<QWidget*>() << this->tips);
+		this->_set_modal(true, QList<QDialog*>() << this->tips);
 	}
 
 	if (frame.contains("run"))
@@ -1210,7 +1206,7 @@ void AnimatedTour::close_tour()
 {
 	this->tips->fade_out(this, SLOT(_close_canvas()));
 	this->canvas->set_interaction(false);
-	this->_set_modal(true, QList<QWidget*>() << this->tips);
+	this->_set_modal(true, QList<QDialog*>() << this->tips);
 	this->canvas->hide();
 
 	try

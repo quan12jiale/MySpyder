@@ -206,7 +206,7 @@ private Q_SLOTS:
 	void go_to_step(int number);
 private:
 	void _clear_canvas();
-	void _set_modal(bool value, const QList<QWidget*>& widgets);
+	void _set_modal(bool value, const QList<QDialog*>& widgets);
 	std::pair<QWidget*, QDockWidget*> _process_widgets(
 		const QString& names, MainWindow* spy_window) const;
 	void _set_data();
