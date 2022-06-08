@@ -32,13 +32,13 @@ public:
     QStringList wrap(QString text);
     QString fill(QString text);
 
-    static QString word_punct;
-    static QString letter;
-    static QString whitespace;
-    static QString nowhitespace;
-    static QRegularExpression wordsep_re;
-    static QRegularExpression wordsep_simple_re;
-    static QRegularExpression sentence_end_re;
+    static const QString word_punct;
+    static const QString letter;
+    static const QString whitespace;
+    static const QString nowhitespace;
+    static const QRegularExpression wordsep_re;
+    static const QRegularExpression wordsep_simple_re;
+    static const QRegularExpression sentence_end_re;
 private:
     int width=70;
     QString initial_indent;

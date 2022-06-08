@@ -153,9 +153,9 @@ void FilesFilterLine::focusOutEvent(QFocusEvent *event)
 
 
 /********** FileSwitcher **********/
-int FileSwitcher::FILE_MODE = 1;
-int FileSwitcher::SYMBOL_MODE = 2;
-int FileSwitcher::MAX_WIDTH = 600;
+const int FileSwitcher::FILE_MODE = 1;
+const int FileSwitcher::SYMBOL_MODE = 2;
+const int FileSwitcher::MAX_WIDTH = 600;
 
 FileSwitcher::FileSwitcher(QWidget* parent, EditorStack* plugin, QTabWidget* tabs,
                            const QList<FileInfo*>& data, const QIcon& icon)

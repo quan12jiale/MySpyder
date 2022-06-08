@@ -96,8 +96,8 @@ public:
     enum {
         CLASS, FUNCTION, STATEMENT, COMMENT, CELL
     };
-    static QString FUNCTION_TOKEN;
-    static QString CLASS_TOKEN;
+    static const QString FUNCTION_TOKEN;
+    static const QString CLASS_TOKEN;
 public:
     QString text;
     int fold_level;//类似行号，match.start()

@@ -17,8 +17,8 @@ class ExplorerWidget;
 class IconProvider : public QFileIconProvider
 {
 public:
-    static QHash<QString,QString> APP_FILES;
-    static QHash<QString,QString> OFFICE_FILES;
+    static const QHash<QString,QString> APP_FILES;
+    static const QHash<QString,QString> OFFICE_FILES;
 public:
     QTreeView* treeview;
     QHash<QString,QString> application_icons;

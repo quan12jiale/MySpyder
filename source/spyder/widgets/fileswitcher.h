@@ -38,9 +38,9 @@ class FileSwitcher : public QDialog
 signals:
     void sig_goto_file(int, EditorStack*);
 public:
-    static int FILE_MODE;
-    static int SYMBOL_MODE;
-    static int MAX_WIDTH;
+    static const int FILE_MODE;
+    static const int SYMBOL_MODE;
+    static const int MAX_WIDTH;
 public:
     QList<QPair<QTabWidget*, EditorStack*>> plugins_tabs;
     QList<QPair<QList<FileInfo*>, QIcon>> plugins_data;

@@ -44,7 +44,7 @@ void create_script(const QString& fname)
 }
 
 
-QHash<QString,QString> IconProvider::APP_FILES  =
+const QHash<QString,QString> IconProvider::APP_FILES  =
 {{"zip", "ArchiveFileIcon"},
  {"x-tar", "ArchiveFileIcon"},
  {"x-7z-compressed", "ArchiveFileIcon"},
@@ -58,7 +58,7 @@ QHash<QString,QString> IconProvider::APP_FILES  =
  {"vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ExcelFileIcon"},
  {"pdf", "PDFIcon"}};
 
-QHash<QString,QString> IconProvider::OFFICE_FILES =
+const QHash<QString,QString> IconProvider::OFFICE_FILES =
 {{".xlsx", "ExcelFileIcon"},
  {".docx", "WordFileIcon"},
  {".pptx", "PowerpointFileIcon"}};

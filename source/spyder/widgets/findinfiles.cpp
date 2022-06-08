@@ -383,8 +383,8 @@ void SearchInComboBox::__redirect_stdio_emit(bool value)
 
 
 /********** FindOptions **********/
-QString FindOptions::REGEX_INVALID = "background-color:rgb(255, 80, 80);";
-QString FindOptions::REGEX_ERROR = "Regular expression error";
+const QString FindOptions::REGEX_INVALID = "background-color:rgb(255, 80, 80);";
+const QString FindOptions::REGEX_ERROR = "Regular expression error";
 
 FindOptions::FindOptions(QWidget* parent,
             const QStringList& search_text,

@@ -4,10 +4,10 @@ namespace textwrap {
 
 static QString _whitespace = "\t\n\x0b\x0c\r ";
 
-QString TextWrapper::word_punct = "[\\w!\"\'&.,?]";
-QString TextWrapper::letter = "[^\\d\\W]";
-QString TextWrapper::whitespace = QString("[%1]").arg(QRegularExpression::escape(_whitespace));
-QString TextWrapper::nowhitespace = "[^" + whitespace.mid(1);
+const QString TextWrapper::word_punct = "[\\w!\"\'&.,?]";
+const QString TextWrapper::letter = "[^\\d\\W]";
+const QString TextWrapper::whitespace = QString("[%1]").arg(QRegularExpression::escape(_whitespace));
+const QString TextWrapper::nowhitespace = "[^" + whitespace.mid(1);
 
 static QString pattern = QString("(%1+|(?<=%2)-{2,}(?=\\w)|%3+?(?:-(?:(?<=%4{2}-)|(?<=%5-%6-))(?=%7-?%8)|(?=%9|\\Z)|(?<=%10)(?=-{2,}\\w)))")
         .arg(TextWrapper::whitespace)
@@ -20,9 +20,9 @@ static QString pattern = QString("(%1+|(?<=%2)-{2,}(?=\\w)|%3+?(?:-(?:(?<=%4{2}-
         .arg(TextWrapper::letter)
         .arg(TextWrapper::whitespace)
         .arg(TextWrapper::word_punct);
-QRegularExpression TextWrapper::wordsep_re = QRegularExpression(pattern);
-QRegularExpression TextWrapper::wordsep_simple_re = QRegularExpression(QString("(%1+)").arg(TextWrapper::whitespace));
-QRegularExpression TextWrapper::sentence_end_re = QRegularExpression("[a-z][\\.\\!\?][\"\']?\\Z");
+const QRegularExpression TextWrapper::wordsep_re = QRegularExpression(pattern);
+const QRegularExpression TextWrapper::wordsep_simple_re = QRegularExpression(QString("(%1+)").arg(TextWrapper::whitespace));
+const QRegularExpression TextWrapper::sentence_end_re = QRegularExpression("[a-z][\\.\\!\?][\"\']?\\Z");
 
 TextWrapper::TextWrapper(int width,
                    const QString& initial_indent,

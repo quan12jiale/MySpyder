@@ -20,8 +20,8 @@ signals:
     void return_pressed();
 public:
     //0:False; 1:True, 2:None, 3:regexp_error
-    static QHash<bool, QString> STYLE;
-    static QHash<bool, QString> TOOLTIP;
+    static const QHash<bool, QString> STYLE;
+    static const QHash<bool, QString> TOOLTIP;
 
     bool enable_replace;
     CodeEditor* editor;

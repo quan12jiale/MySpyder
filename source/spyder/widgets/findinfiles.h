@@ -139,8 +139,8 @@ class FindOptions : public QWidget
 {
     Q_OBJECT
 public:
-    static QString REGEX_INVALID;
-    static QString REGEX_ERROR;
+    static const QString REGEX_INVALID;
+    static const QString REGEX_ERROR;
 signals:
     void find();
     void stop();

@@ -10,9 +10,9 @@ static bool is_position_inf(int pos1, int pos2)
     return pos1 < pos2;
 }
 
-QHash<bool, QString> FindReplace::STYLE = {{false, "background-color:rgb(255, 175, 90);"},
+const QHash<bool, QString> FindReplace::STYLE = {{false, "background-color:rgb(255, 175, 90);"},
                                            {true, ""}};
-QHash<bool, QString> FindReplace::TOOLTIP = {{false, "No matches"},
+const QHash<bool, QString> FindReplace::TOOLTIP = {{false, "No matches"},
                                              {true, "Search string"}};
 
 

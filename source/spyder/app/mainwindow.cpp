@@ -27,10 +27,10 @@ void set_opengl_implementation(const QString& option)
         qApp->setAttribute(Qt::AA_UseOpenGLES);
 }
 
-QMainWindow::DockOptions MainWindow::DOCKOPTIONS =
+const QMainWindow::DockOptions MainWindow::DOCKOPTIONS =
         QMainWindow::AllowTabbedDocks | QMainWindow::AllowNestedDocks;
-int MainWindow::CURSORBLINK_OSDEFAULT = QApplication::cursorFlashTime();
-int MainWindow::DEFAULT_LAYOUTS = 4;
+const int MainWindow::CURSORBLINK_OSDEFAULT = QApplication::cursorFlashTime();
+const int MainWindow::DEFAULT_LAYOUTS = 4;
 
 MainWindow::MainWindow(const QHash<QString,QVariant>& options)
     : QMainWindow ()

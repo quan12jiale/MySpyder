@@ -8,8 +8,8 @@ class ArrayModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    static int ROWS_TO_LOAD;
-    static int COLS_TO_LOAD;
+    static const int ROWS_TO_LOAD;
+    static const int COLS_TO_LOAD;
     QWidget* dialog;
     QHash<QPair<int,int>,QVariant> changes;
     QStringList xlabels;

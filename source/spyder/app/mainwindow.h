@@ -24,11 +24,11 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    static QMainWindow::DockOptions DOCKOPTIONS;
-    static int CURSORBLINK_OSDEFAULT;
+    static const QMainWindow::DockOptions DOCKOPTIONS;
+    static const int CURSORBLINK_OSDEFAULT;
     QString SPYDER_PATH;
     QString SPYDER_NOT_ACTIVE_PATH;
-    static int DEFAULT_LAYOUTS;
+    static const int DEFAULT_LAYOUTS;
 signals:
     void restore_scrollbar_position();
     void all_actions_defined();

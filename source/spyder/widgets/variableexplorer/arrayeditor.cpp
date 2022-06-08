@@ -21,8 +21,8 @@ static QRect get_idx_rect(const QModelIndexList& index_list)
     return QRect(min_row,max_row,min_col,max_col);
 }
 
-int ArrayModel::ROWS_TO_LOAD = 500;
-int ArrayModel::COLS_TO_LOAD = 40;
+const int ArrayModel::ROWS_TO_LOAD = 500;
+const int ArrayModel::COLS_TO_LOAD = 40;
 
 ArrayModel::ArrayModel(const QVector<QVector<QVariant>>& data,
            const QString& format,

@@ -266,8 +266,8 @@ QString make_python_patterns(const QStringList& additional_keywords)
 
 
 
-QString OutlineExplorerData::FUNCTION_TOKEN = "def";
-QString OutlineExplorerData::CLASS_TOKEN = "class";
+const QString OutlineExplorerData::FUNCTION_TOKEN = "def";
+const QString OutlineExplorerData::CLASS_TOKEN = "class";
 OutlineExplorerData::OutlineExplorerData()
 {
     this->text = QString();
