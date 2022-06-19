@@ -85,24 +85,24 @@ public:
     virtual QMainWindow* create_mainwindow()=0;//
     // void create_configwidget()该方法用到CONFIGWIDGET_CLASS
     virtual void apply_plugin_settings(const QStringList& options){}
-    virtual void register_shortcut(QObject* qaction_or_qshortcut, const QString& context,
+    void register_shortcut(QObject* qaction_or_qshortcut, const QString& context,
                                    const QString& name, bool add_sc_to_tip=false);
-    virtual void register_widget_shortcuts(Widget_get_shortcut_data* widget);
+    void register_widget_shortcuts(Widget_get_shortcut_data* widget);
     virtual void switch_to_plugin();
     virtual void visibility_changed(bool enable);
     virtual void plugin_closed();
     void set_option(const QString& option,const QVariant& value);
     QVariant get_option(const QString& option, const QVariant& _default=QVariant());
-    virtual QFont get_plugin_font(bool rich_text=false) const;
-    virtual QFont get_plugin_font2(const QString& rich_text) const;
+    QFont get_plugin_font(bool rich_text=false) const;
+    QFont get_plugin_font2(const QString& rich_text) const;
     // void set_plugin_font
     virtual void update_font(){}
     virtual void __show_message(const QString& message, int timeout=0);
     virtual void starting_long_process(const QString& message);
     virtual void ending_long_process(const QString& message="");
-    virtual QHash<QString, ColorBoolBool> get_color_scheme() const;
+    QHash<QString, ColorBoolBool> get_color_scheme() const;
     virtual void create_toggle_view_action()=0;
-    virtual void toggle_view(bool checked);
+    void toggle_view(bool checked);
 
     virtual QString get_plugin_title() const=0;
     virtual QIcon get_plugin_icon() const;

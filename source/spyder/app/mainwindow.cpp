@@ -1631,13 +1631,11 @@ void MainWindow::add_dockwidget(SpyderPluginMixin *child)
 void MainWindow::close_current_dockwidget()
 {
     QWidget* widget = QApplication::focusWidget();
-    if (!widget)
-        return;
     foreach (SpyderPluginMixin* plugin, this->widgetlist) {
 		QWidget* pwidget = dynamic_cast<QWidget*>(plugin);
         if (pwidget && pwidget->isAncestorOf(widget)) {
-            plugin->visibility_changed(true);//TODO python源码中没有这一行，不记得我什么时候加上的
-            plugin->dockwidget->hide();
+            //plugin->dockwidget->hide();v3.3.3是这样实现的，会导致dockwidget隐藏，但View菜单对应QAction还处于选中状态
+			plugin->toggle_view_action->setChecked(false);//v4.0.1是这样实现的，通过调用toggle_view槽函数隐藏dockwidget
             break;
         }
     }
