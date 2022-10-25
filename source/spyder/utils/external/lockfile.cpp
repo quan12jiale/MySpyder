@@ -8,7 +8,6 @@
 #include <QtCore/QCoreApplication>
 #if defined(Q_OS_WIN)
 #include <Windows.h>
-#endif
 
 MyLockFile::MyLockFile(const QString &fn)
 	: fileName(fn),
@@ -276,3 +275,4 @@ QString MyLockFile::processNameByPid(qint64 pid)
 		name.truncate(i);
 	return name;
 }
+#endif

@@ -2418,7 +2418,7 @@ FileInfo* EditorStack::create_new_editor(const QString &fname, const QString &en
     kwargs["indent_chars"] = this->indent_chars;
     kwargs["tab_stop_width_spaces"] = this->tab_stop_width_spaces;
     if (cloned_from != nullptr) {
-        size_t id = reinterpret_cast<size_t>(cloned_from);
+		qulonglong id = reinterpret_cast<qulonglong>(cloned_from);
         kwargs["cloned_from"] = id;
     }
     kwargs["filename"] = fname;

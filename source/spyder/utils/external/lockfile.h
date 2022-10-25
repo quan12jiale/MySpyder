@@ -1,6 +1,8 @@
 #pragma once
 #include <QtCore/QString>
+#include <QtCore/QLockFile>
 
+#if defined(Q_OS_WIN)
 class MyLockFile
 {
 public:
@@ -45,3 +47,6 @@ private:
 private:
 	Q_DISABLE_COPY(MyLockFile)
 };
+#else
+typedef QLockFile MyLockFile;
+#endif
