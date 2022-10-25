@@ -78,7 +78,8 @@ QSet<Interval> IntervalTree::envelop(int begin, int end) const
 	{
 		return result;
 	}
-	result = root->search_point(begin, QSet<Interval>());
+	QSet<Interval> tmpResult;// invalid initialization of non-const reference of type ‘QSet<Interval>&’ from an rvalue of type ‘QSet<Interval>’
+	result = root->search_point(begin, tmpResult);
 
 	QMap<int, int> boundary_table = this->boundary_table;
 	// std::distance(first, last)返回迭代器之间的距离

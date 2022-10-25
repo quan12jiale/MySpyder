@@ -188,7 +188,11 @@ void FadingDialog::_fade_setup()
 	this->_fade_running = true;
 	this->effect = new QGraphicsOpacityEffect(this);
 	this->setGraphicsEffect(this->effect);//QWidget takes ownership of effect.
+#if defined(Q_OS_WIN)
 	this->anim = std::make_unique<QPropertyAnimation>(this->effect, QByteArray("opacity"));
+#else
+	this->anim = std::unique_ptr<QPropertyAnimation>{ new QPropertyAnimation(this->effect, QByteArray("opacity")) };
+#endif
 }
 
 void FadingDialog::fade_in(QObject* receiver, const char* on_finished_connect)

@@ -5,7 +5,7 @@
 
 #include "plugins/ipythonconsole.h"
 #include "app/mainwindow.h"
-#include "plugins\editor\utils\editor.h"
+#include "plugins/editor/utils/editor.h"
 #include "utils/external/lockfile.h"
 
 void registe_meta_type()

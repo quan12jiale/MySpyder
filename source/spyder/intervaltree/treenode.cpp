@@ -389,7 +389,8 @@ bool TreeNode::contains_point(int p)
 
 QSet<Interval> TreeNode::all_children()
 {
-	return this->all_children_helper(QSet<Interval>());
+	QSet<Interval> tmpResult;
+	return this->all_children_helper(tmpResult);
 }
 
 QSet<Interval> TreeNode::all_children_helper(QSet<Interval>& result)

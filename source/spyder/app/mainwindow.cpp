@@ -430,7 +430,7 @@ void MainWindow::setup()
     this->editor = new Editor(this);
     this->editor->register_plugin();
 	auto plugin = static_cast<SpyderPluginMixin*>(this->editor);//该步转换是必须的：多继承下指针偏移
-	this->setProperty("editor", QVariant(reinterpret_cast<std::size_t>(plugin)));
+	this->setProperty("editor", QVariant(reinterpret_cast<qulonglong>(plugin)));
 
     QAction* quit_action = new QAction(ima::icon("exit"), "&Quit", this);
     // triggered=this->console.quit
@@ -455,7 +455,7 @@ void MainWindow::setup()
         this->explorer = new Explorer(this);
         this->explorer->register_plugin();
 		auto plugin = static_cast<SpyderPluginMixin*>(this->explorer);
-		this->setProperty("explorer", QVariant(reinterpret_cast<std::size_t>(plugin)));
+		this->setProperty("explorer", QVariant(reinterpret_cast<qulonglong>(plugin)));
     }
 
     if (CONF_get("historylog", "enable").toBool()) {
@@ -463,7 +463,7 @@ void MainWindow::setup()
         this->historylog = new HistoryLog(this);
         this->historylog->register_plugin();
 		auto plugin = static_cast<SpyderPluginMixin*>(this->historylog);
-		this->setProperty("historylog", QVariant(reinterpret_cast<std::size_t>(plugin)));
+		this->setProperty("historylog", QVariant(reinterpret_cast<qulonglong>(plugin)));
     }
 
     if (CONF_get("onlinehelp", "enable").toBool()) {
