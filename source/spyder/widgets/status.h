@@ -1,7 +1,9 @@
 ﻿#pragma once
 
 #include <QtWidgets>
-#include <windows.h>
+#if defined(Q_OS_WIN)
+#include <Windows.h>
+#endif
 #include "str.h"
 
 class StatusBarWidget : public QWidget
@@ -26,7 +28,7 @@ public:
 
     BaseTimerStatus(QWidget* parent, QStatusBar* statusbar);
     void set_interval(int interval);
-    virtual DWORD get_value() = 0;
+    virtual quint32 get_value() = 0;
 public slots:
     void update_label();
 };
@@ -37,7 +39,7 @@ class MemoryStatus : public BaseTimerStatus
     Q_OBJECT
 public:
     MemoryStatus(QWidget* parent, QStatusBar* statusbar);
-    DWORD get_value();
+	quint32 get_value() override;
 };
 
 

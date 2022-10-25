@@ -1,6 +1,7 @@
 #pragma once
 #include "config/config_main.h"
 #include <QTextDocument>
+#include <type_traits>
 
 namespace sh {
 	class BaseSH;
@@ -46,8 +47,10 @@ class SyntaxHighlighterFactoryImpl : public ISyntaxHighlighterFactory
 	// 2、条件性地从重载决议移除函数重载或模板特化：std::enable_if。
 	// 3、#TODO 使用可变参数模板，代替va_list
 	// std::is_convertible_v<ClassType*, sh::BaseSH*>
+#if defined(Q_OS_WIN)
 	static_assert(std::is_base_of_v<sh::BaseSH, ClassType>,
 		"ClassType must derived from sh::BaseSH");
+#endif
 public:
 	SyntaxHighlighterFactoryImpl();
 

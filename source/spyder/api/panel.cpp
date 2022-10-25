@@ -32,7 +32,7 @@ void Panel::setScrollable(bool value)
 
 void Panel::on_install(CodeEditor* editor)
 {
-	__super::on_install(editor);
+	EditorExtension::on_install(editor);
 	this->setParent(editor);
 	this->setPalette(qApp->palette());
 	this->setFont(qApp->font());
@@ -61,7 +61,7 @@ void Panel::paintEvent(QPaintEvent *event)
 
 void Panel::setVisible(bool visible)
 {
-	__super::setVisible(visible);
+	QWidget::setVisible(visible);
 	if (this->getEditor())
 	{
 		this->getEditor(); // panels.refresh()

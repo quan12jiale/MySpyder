@@ -60,15 +60,19 @@ MemoryStatus::MemoryStatus(QWidget* parent, QStatusBar* statusbar)
     setToolTip(TIP);
 }
 
-DWORD memory_usage()
+quint32 memory_usage()
 {
+#if defined(Q_OS_WIN)
     MEMORYSTATUSEX memorystatus;
 	memorystatus.dwLength = sizeof(MEMORYSTATUSEX);
     GlobalMemoryStatusEx(&memorystatus);
     return memorystatus.dwMemoryLoad;
+#else
+	return 0;
+#endif
 }
 
-DWORD MemoryStatus::get_value()
+quint32 MemoryStatus::get_value()
 {
     return memory_usage();
 }

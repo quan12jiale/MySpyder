@@ -5,8 +5,8 @@
 #include <QRegularExpression>
 #include <QStringList>
 #include <QHash>
+#include "utils/SyntaxHighlighterFactory.h"
 
-enum HighlighterEnumType;
 
 namespace sourcecode {
 

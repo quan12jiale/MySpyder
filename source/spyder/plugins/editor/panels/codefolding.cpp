@@ -181,7 +181,7 @@ void FoldingPanel::paintEvent(QPaintEvent *event)
 	Paints the fold indicators and the possible fold region background
 	on the folding panel.
 	*/
-	__super::paintEvent(event);
+	Panel::paintEvent(event);
 	QPainter painter(this);
 
 	if (this->_mouse_over_line != -1)
@@ -415,7 +415,7 @@ void FoldingPanel::_highlight_block(const QTextBlock& block)
 
 void FoldingPanel::mouseMoveEvent(QMouseEvent *event)
 {
-	__super::mouseMoveEvent(event);
+	Panel::mouseMoveEvent(event);
 	TextHelper th(this->getEditor());
 	int line = th.line_nbr_from_position(event->pos().y());
 	if (line >= 0)
@@ -459,7 +459,7 @@ void FoldingPanel::mouseMoveEvent(QMouseEvent *event)
 
 void FoldingPanel::leaveEvent(QEvent *event)
 {
-	__super::leaveEvent(event);
+	Panel::leaveEvent(event);
 	QApplication::restoreOverrideCursor();
 	this->_highlight_runner->cancel_requests();
 	if (!this->highlight_caret_scope)

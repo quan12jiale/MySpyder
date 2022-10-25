@@ -3376,7 +3376,7 @@ void CodeEditor::mouseMoveEvent(QMouseEvent *event)
 
 void CodeEditor::setPlainText(const QString &text)
 {
-	__super::setPlainText(text);
+	TextEditBaseWidget::setPlainText(text);
 	emit this->new_text_set();
 }
 

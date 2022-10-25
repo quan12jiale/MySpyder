@@ -6,7 +6,9 @@
 #include <QtCore/QDebug>
 #include <QtCore/QFileinfo>
 #include <QtCore/QCoreapplication>
+#if defined(Q_OS_WIN)
 #include <Windows.h>
+#endif
 
 MyLockFile::MyLockFile(const QString &fn)
 	: fileName(fn),
