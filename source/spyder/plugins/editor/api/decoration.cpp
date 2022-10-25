@@ -1,4 +1,4 @@
-#include "plugins\editor\api\decoration.h"
+#include "plugins/editor/api/decoration.h"
 #include "str.h"
 
 const QHash<QString, int> DRAW_ORDERS = 

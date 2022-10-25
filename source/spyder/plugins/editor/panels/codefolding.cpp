@@ -1,6 +1,6 @@
 #include "plugins/editor/panels/codefolding.h"
 #include "plugins/editor/utils/editor.h"
-#include "plugins\editor\api\decoration.h"
+#include "plugins/editor/api/decoration.h"
 
 #include "widgets/sourcecode/codeeditor.h"
 #include "str.h"

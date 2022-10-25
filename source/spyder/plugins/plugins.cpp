@@ -190,7 +190,7 @@ void SpyderDockWidget::install_tab_event_filter(bool value)
         this->dock_tabbar = dock_tabbar;
         if (this->dock_tabbar->property("filter").isNull()) {
             TabFilter* filter = new TabFilter(this->dock_tabbar, this->main);
-            this->dock_tabbar->setProperty("filter", reinterpret_cast<size_t>(filter));
+            this->dock_tabbar->setProperty("filter", reinterpret_cast<qulonglong>(filter));
             this->dock_tabbar->installEventFilter(filter);
         }
     }

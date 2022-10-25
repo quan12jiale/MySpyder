@@ -503,8 +503,8 @@ QWidget* SpyderConfigPage::create_lineedit(QString text, QString option, QVarian
         edit->setValidator(new QRegExpValidator(QRegExp(regex)));
     this->lineedits[edit] = QPair<QString,QVariant>(option, _default);
     QWidget* widget = new QWidget(this);
-    widget->setProperty("label", reinterpret_cast<size_t>(label)); //动态属性
-    widget->setProperty("textbox", reinterpret_cast<size_t>(edit));
+    widget->setProperty("label", reinterpret_cast<qulonglong>(label)); //动态属性
+    widget->setProperty("textbox", reinterpret_cast<qulonglong>(edit));
     widget->setLayout(layout);
     edit->setProperty("restart_required", restart);
     edit->setProperty("label_text", text);
@@ -606,11 +606,11 @@ QWidget* SpyderConfigPage::create_spinbox(QString prefix, QString suffix,
     QLabel *plabel=nullptr, *slabel=nullptr;
     if (!prefix.isEmpty()) {
         plabel = new QLabel(prefix);
-        widget->setProperty("plabel", reinterpret_cast<size_t>(plabel));
+        widget->setProperty("plabel", reinterpret_cast<qulonglong>(plabel));
     }
     if (!suffix.isEmpty()) {
         slabel = new QLabel(suffix);
-        widget->setProperty("slabel", reinterpret_cast<size_t>(slabel));
+        widget->setProperty("slabel", reinterpret_cast<qulonglong>(slabel));
     }
     QSpinBox* spinbox = nullptr;
     if (step != -1) {
@@ -636,7 +636,7 @@ QWidget* SpyderConfigPage::create_spinbox(QString prefix, QString suffix,
     }
     layout->addStretch(1);
     layout->setContentsMargins(0, 0, 0, 0);
-    widget->setProperty("spinbox", reinterpret_cast<size_t>(spinbox));//动态属性
+    widget->setProperty("spinbox", reinterpret_cast<qulonglong>(spinbox));//动态属性
     widget->setLayout(layout);
     return widget;
 }
@@ -744,8 +744,8 @@ QWidget* SpyderConfigPage::create_combobox(QString text, QList<QPair<QString, QS
     layout->setContentsMargins(0, 0, 0, 0);
 
     QWidget* widget = new QWidget(this);
-    widget->setProperty("label", reinterpret_cast<size_t>(label));//动态属性
-    widget->setProperty("combobox", reinterpret_cast<size_t>(combobox));
+    widget->setProperty("label", reinterpret_cast<qulonglong>(label));//动态属性
+    widget->setProperty("combobox", reinterpret_cast<qulonglong>(combobox));
     widget->setLayout(layout);
     combobox->setProperty("restart_required", restart);
     combobox->setProperty("label_text", text);
@@ -781,8 +781,8 @@ QWidget* SpyderConfigPage::create_file_combobox(QString text, QStringList choice
     layout->addWidget(browse_btn, 0, 10);
     layout->setContentsMargins(0, 0, 0, 0);
     QWidget* widget = new QWidget(this);
-    widget->setProperty("combobox", reinterpret_cast<size_t>(combobox));// 动态属性
-    widget->setProperty("browse_btn", reinterpret_cast<size_t>(browse_btn));
+    widget->setProperty("combobox", reinterpret_cast<qulonglong>(combobox));// 动态属性
+    widget->setProperty("browse_btn", reinterpret_cast<qulonglong>(browse_btn));
     widget->setLayout(layout);
     return widget;
 }
@@ -811,10 +811,10 @@ QWidget* SpyderConfigPage::create_fontgroup(QString option, QString title,
     layout->addStretch(1);
 
     QWidget* widget = new QWidget(this);
-    widget->setProperty("fontlabel", reinterpret_cast<size_t>(fontlabel));
-    widget->setProperty("sizelabel", reinterpret_cast<size_t>(sizelabel));
-    widget->setProperty("fontbox", reinterpret_cast<size_t>(fontbox));
-    widget->setProperty("sizebox", reinterpret_cast<size_t>(sizebox));
+    widget->setProperty("fontlabel", reinterpret_cast<qulonglong>(fontlabel));
+    widget->setProperty("sizelabel", reinterpret_cast<qulonglong>(sizelabel));
+    widget->setProperty("fontbox", reinterpret_cast<qulonglong>(fontbox));
+    widget->setProperty("sizebox", reinterpret_cast<qulonglong>(sizebox));
     widget->setLayout(layout);
     return widget;
 }

@@ -1,11 +1,11 @@
 #include "utils/external/lockfile.h"
 #include <QtCore/QFile>
 #include <QtCore/QThread>
-#include <QtCore/QElapsedtimer>
-#include <QtCore/QDatetime>
+#include <QtCore/QElapsedTimer>
+#include <QtCore/QDateTime>
 #include <QtCore/QDebug>
-#include <QtCore/QFileinfo>
-#include <QtCore/QCoreapplication>
+#include <QtCore/QFileInfo>
+#include <QtCore/QCoreApplication>
 #if defined(Q_OS_WIN)
 #include <Windows.h>
 #endif
