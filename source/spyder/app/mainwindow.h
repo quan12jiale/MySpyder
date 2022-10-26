@@ -128,6 +128,7 @@ public:
 
     // Status bar widgets
     MemoryStatus* mem_status;
+    CPUStatus* cpu_status;
 
     // Toolbars
     QList<QToolBar*> visible_toolbars;

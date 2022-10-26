@@ -138,6 +138,7 @@ MainWindow::MainWindow(const QHash<QString,QVariant>& options)
 
     // Status bar widgets
     this->mem_status = nullptr;
+    this->cpu_status = nullptr;
 
     // Toolbars
     this->visible_toolbars.clear();
@@ -584,6 +585,7 @@ void MainWindow::setup()
 
     // 1057行
     mem_status = new MemoryStatus(this, status);
+    cpu_status = new CPUStatus(this, status);
     this->apply_statusbar_settings();
     //1061行到1076h行第三方插件不实现
 
@@ -2077,6 +2079,11 @@ void MainWindow::apply_statusbar_settings()
             QString name = "memory_usage";
             mem_status->setVisible(CONF_get("main", QString("%1/enable").arg(name)).toBool());
             mem_status->set_interval(CONF_get("main", QString("%1/timeout").arg(name)).toInt());
+        }
+        if (this->cpu_status != nullptr) {
+            QString name = "cpu_usage";
+            cpu_status->setVisible(CONF_get("main", QString("%1/enable").arg(name)).toBool());
+            cpu_status->set_interval(CONF_get("main", QString("%1/timeout").arg(name)).toInt());
         }
     }
     else

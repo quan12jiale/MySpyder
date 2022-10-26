@@ -40,6 +40,22 @@ public:
 };
 
 
+class CPUStatus : public BaseTimerStatus
+{
+    Q_OBJECT
+public:
+    CPUStatus(QWidget* parent, QStatusBar* statusbar);
+    quint32 get_value() override;
+private:
+    bool initialize();
+    int cpuUsage();
+private:
+    double m_fOldCPUIdleTime;
+    double m_fOldCPUKernelTime;
+    double m_fOldCPUUserTime;
+};
+
+
 class ReadWriteStatus : public StatusBarWidget
 {
     Q_OBJECT

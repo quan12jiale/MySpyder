@@ -1081,15 +1081,30 @@ void MainConfigPage::setup_page()
     memory_box->setEnabled(true);
     memory_spin->setEnabled(true);
 
+    QCheckBox* cpu_box = create_checkbox("Show CPU usage every", "cpu_usage/enable",
+                                         QVariant(), this->main->cpu_status->toolTip());
+    QWidget* cpu_spin = create_spinbox("", "ms", "cpu_usage/timeout",
+                                          QVariant(), 100, 1000000, 100);
+    connect(cpu_box, SIGNAL(toggled(bool)), cpu_spin, SLOT(setEnabled(bool)));
+    cpu_spin->setEnabled(this->get_option("cpu_usage/enable").toBool());
+    cpu_box->setEnabled(true);
+    cpu_spin->setEnabled(true);
+
    bool status_bar_o = this->get_option("show_status_bar").toBool();
    connect(show_status_bar, SIGNAL(toggled(bool)), memory_box, SLOT(setEnabled(bool)));
    connect(show_status_bar, SIGNAL(toggled(bool)), memory_spin, SLOT(setEnabled(bool)));
+   connect(show_status_bar, SIGNAL(toggled(bool)), cpu_box, SLOT(setEnabled(bool)));
+   connect(show_status_bar, SIGNAL(toggled(bool)), cpu_spin, SLOT(setEnabled(bool)));
    memory_box->setEnabled(status_bar_o);
    memory_spin->setEnabled(status_bar_o);
+   cpu_box->setEnabled(status_bar_o);
+   cpu_spin->setEnabled(status_bar_o);
 
    QGridLayout* cpu_memory_layout = new QGridLayout;
    cpu_memory_layout->addWidget(memory_box, 0, 0);
    cpu_memory_layout->addWidget(memory_spin, 0, 1);
+   cpu_memory_layout->addWidget(cpu_box, 1, 0);
+   cpu_memory_layout->addWidget(cpu_spin, 1, 1);
 
    QVBoxLayout* sbar_layout = new QVBoxLayout;
    sbar_layout->addWidget(show_status_bar);
