@@ -1,9 +1,6 @@
 ﻿#pragma once
 
 #include <QtWidgets>
-#if defined(Q_OS_WIN)
-#include <Windows.h>
-#endif
 #include "str.h"
 
 class StatusBarWidget : public QWidget

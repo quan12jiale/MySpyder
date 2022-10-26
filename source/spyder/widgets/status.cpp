@@ -1,4 +1,8 @@
 ﻿#include "status.h"
+#include <memory>
+#if defined(Q_OS_WIN)
+#include <Windows.h>
+#endif
 
 StatusBarWidget::StatusBarWidget(QWidget* parent, QStatusBar* statusbar)
     : QWidget (parent)
@@ -60,6 +64,55 @@ MemoryStatus::MemoryStatus(QWidget* parent, QStatusBar* statusbar)
     setToolTip(TIP);
 }
 
+void close_file(FILE* fp) 
+{
+	if (fp)
+	{
+		fclose(fp);
+	}
+}
+
+/***************************************************************************************************
+功能： 获取Linux系统内存使用率
+返回： 内存使用率百分比
+proc/meminfo文件前三行数据格式如下：
+MemTotal:       16413744 kB
+MemFree:        13392420 kB
+MemAvailable:   14592932 kB
+***************************************************************************************************/
+quint32 getMemoryLoadLinux()
+{
+	quint32 dMemUsedRate;
+
+	char cBuff[128];
+	char cNameTotal[128];
+	unsigned long ulMemTotal = 1L; // 初始化，防止除0
+
+	char name11[128];
+	unsigned long ulMemFree;
+
+	std::unique_ptr<FILE, void(*)(FILE*) > fd{ fopen("/proc/meminfo", "r"), close_file };
+	if (fd == NULL)
+	{
+		return 0;
+	}
+
+	if (NULL == fgets(cBuff, sizeof(cBuff), fd.get()))
+	{
+		return 0;
+	}
+	sscanf(cBuff, "%s %lu", cNameTotal, &ulMemTotal);
+
+	if (NULL == fgets(cBuff, sizeof(cBuff), fd.get()))
+	{
+		return 0;
+	}
+	sscanf(cBuff, "%s %lu", name11, &ulMemFree);
+
+	dMemUsedRate = (1.0 - (double)ulMemFree / (double)ulMemTotal) * 100;
+	return dMemUsedRate;
+}
+
 quint32 memory_usage()
 {
 #if defined(Q_OS_WIN)
@@ -68,7 +121,7 @@ quint32 memory_usage()
     GlobalMemoryStatusEx(&memorystatus);
     return memorystatus.dwMemoryLoad;
 #else
-	return 0;
+	return getMemoryLoadLinux();
 #endif
 }
 
