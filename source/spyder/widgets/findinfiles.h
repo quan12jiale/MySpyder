@@ -291,6 +291,7 @@ public:
     ResultsBrowser* result_browser;
 
     FindInFilesWidget(QWidget* parent,
+					  QStringList external_path_history = QStringList(),
                       QString search_text="",
                       bool search_text_regexp=false,
                       QString exclude=EXCLUDE_PATTERNS[0],
@@ -298,8 +299,7 @@ public:
                       bool exclude_regexp=false,
                       QStringList supported_encodings={"utf-8", "iso-8859-1", "cp1252"},
                       bool more_options=true,
-                      bool case_sensitive=false,
-                      QStringList external_path_history=QStringList());
+                      bool case_sensitive=false);
     void set_search_text(const QString& text);
     void stop_and_reset_thread(bool ignore_results=false);
     void closing_widget();

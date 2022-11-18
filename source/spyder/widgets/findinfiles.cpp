@@ -988,6 +988,7 @@ void FileProgressBar::hideEvent(QHideEvent *event)
 
 /********** FindInFilesWidget **********/
 FindInFilesWidget::FindInFilesWidget(QWidget* parent,
+				  QStringList external_path_history,
                   QString search_text,
                   bool search_text_regexp,
                   QString exclude,
@@ -995,8 +996,7 @@ FindInFilesWidget::FindInFilesWidget(QWidget* parent,
                   bool exclude_regexp,
                   QStringList supported_encodings,
                   bool more_options,
-                  bool case_sensitive,
-                  QStringList external_path_history)
+                  bool case_sensitive)
     : QWidget (parent)
 {
     setWindowTitle("Find in files");

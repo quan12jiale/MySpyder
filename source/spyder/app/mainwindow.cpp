@@ -479,7 +479,8 @@ void MainWindow::setup()
 
 
     if (CONF_get("find_in_files", "enable").toBool()) {
-        this->findinfiles = new FindInFiles(this);
+		const QStringList external_path_history = CONF_get("find_in_files", "path_history", QStringList()).toStringList();
+        this->findinfiles = new FindInFiles(this, external_path_history);
         this->findinfiles->register_plugin();
     }
 

@@ -1,8 +1,8 @@
 ﻿#include "plugins_findinfiles.h"
 #include "app/mainwindow.h"
 
-FindInFiles::FindInFiles(MainWindow *parent)
-    : FindInFilesWidget (parent)
+FindInFiles::FindInFiles(MainWindow *parent, QStringList external_path_history)
+    : FindInFilesWidget (parent, external_path_history)
 {
     this->CONF_SECTION = "find_in_files";
 

@@ -31,7 +31,7 @@ public:
 
 
 public:
-    FindInFiles(MainWindow* parent = nullptr);
+    FindInFiles(MainWindow* parent = nullptr, QStringList external_path_history = QStringList());
 
     void set_project_path(const QString& path);
 
