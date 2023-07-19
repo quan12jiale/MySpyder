@@ -1,4 +1,5 @@
 #include "intervaltree/intervaltree.h"
+#include <stdexcept>
 
 QString strErrorArg = QStringLiteral("IntervalTree: Null Interval objects not allowed in IntervalTree: %1");
 

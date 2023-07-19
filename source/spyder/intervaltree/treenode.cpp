@@ -1,5 +1,6 @@
 #include "intervaltree/treenode.h"
 #include "qmath.h"
+#include <stdexcept>
 
 TreeNode::TreeNode(int x_center /*= INT32_MAX*/, const QList<Interval>& s_center_list /*= QList<Interval>()*/, TreeNode* left_node /*= nullptr*/, TreeNode* right_node /*= nullptr*/)
 {

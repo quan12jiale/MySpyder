@@ -36,8 +36,8 @@ if(${ISLINUX})
     set(CMAKE_CONFIGURATION_TYPES Debug Release ReleaseDebug)
 endif()
 
-set(QT_PREFIX_PATH $ENV{QTDIR})
-message("QT install path: $ENV{QTDIR}")
+set(QT_PREFIX_PATH $ENV{QTDIR}) # QTDIR64
+message("QT install path: $ENV{QTDIR}") # QTDIR64
 
 if(${ISWINDOWS})
 	if(CMAKE_SIZEOF_VOID_P EQUAL 4)
