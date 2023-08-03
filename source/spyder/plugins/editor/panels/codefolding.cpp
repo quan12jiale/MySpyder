@@ -698,6 +698,16 @@ void FoldingPanel::refresh_decorations(bool force /*= false*/)
 	this->_prev_cursor = cursor;
 }
 
+/*
+Refrehes editor content and scollbars.
+
+We generate a fake resize event to refresh scroll bar.
+
+We have the same problem as described here:
+http://www.qtcentre.org/threads/44803 and we apply the same solution
+(don't worry, there is no visual effect, the editor does not grow up
+at all, even with a value = 500)
+*/
 void FoldingPanel::_refresh_editor_and_scrollbars()
 {
 	TextHelper th(this->getEditor());
