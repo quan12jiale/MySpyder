@@ -1347,7 +1347,7 @@ void CodeEditor::linenumberarea_paint_event(QPaintEvent *event)
         painter.drawPixmap(0, ytop + (font_height-pixmap_height) / 2, pixmap);
     };
 
-    foreach (auto pair, this->__visible_blocks) {
+    foreach (const auto& pair, this->__visible_blocks) {
         int top = pair.top;
         int line_number = pair.line_number;
         QTextBlock block = pair.block;
@@ -3511,7 +3511,7 @@ void CodeEditor::_draw_editor_cell_divider()
         pen.setBrush(cell_line_color);
         painter.setPen(pen);
 
-        foreach (auto pair, this->__visible_blocks) {
+        foreach (const auto& pair, this->__visible_blocks) {
             int top = pair.top;
             QTextBlock block = pair.block;
             // TODO源码是if self.is_cell_separator(block):

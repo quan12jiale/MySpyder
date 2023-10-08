@@ -101,13 +101,13 @@ quint32 getMemoryLoadLinux()
 	{
 		return 0;
 	}
-	sscanf(cBuff, "%s %lu", cNameTotal, &ulMemTotal);
+    int ret = sscanf(cBuff, "%s %lu", cNameTotal, &ulMemTotal);
 
 	if (NULL == fgets(cBuff, sizeof(cBuff), fd.get()))
 	{
 		return 0;
 	}
-	sscanf(cBuff, "%s %lu", name11, &ulMemFree);
+    ret = sscanf(cBuff, "%s %lu", name11, &ulMemFree);
 
 	dMemUsedRate = (1.0 - (double)ulMemFree / (double)ulMemTotal) * 100;
 	return dMemUsedRate;
