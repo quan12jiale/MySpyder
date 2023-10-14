@@ -88,11 +88,12 @@ QIcon IconProvider::icon(const QFileInfo &qfileinfo) const
 
         if (!mime_type.isEmpty()) {
             QString file_type, bin_name;
-            try {
-                QStringList list = mime_type.split('/');
+            // in the Windows registry, .sql has a mimetype of text\plain instead of text/plain
+            const QStringList list = mime_type.split('/');
+            if (list.size() >= 2) {
                 file_type = list[0];
                 bin_name = list[1];
-            } catch (...) {
+            } else {
                 file_type = "text";
             }
             if (file_type == "text")
