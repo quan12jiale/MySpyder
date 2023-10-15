@@ -95,13 +95,11 @@ public:
 
     QPoint get_scrollbar_position() const;
     void set_scrollbar_position(const QPoint& position);
-    void restore_scrollbar_positions();
 
     QStringList get_expanded_state();
     void set_expanded_state(const QStringList& state);
     void save_expanded_state();
 
-    void follow_directories_loaded(const QString& fname);
     void restore_expanded_state();
     void filter_directories();
 public slots:
@@ -111,7 +109,9 @@ public slots:
     void clicked();
     void convert_notebooks();
     virtual void go_to_parent_directory() {}
+    void restore_scrollbar_positions();
     void restore_directory_state(const QString& fname);
+    void follow_directories_loaded(const QString& fname);
 };
 
 
@@ -127,7 +127,7 @@ public:
     void sort(int column, Qt::SortOrder order = Qt::AscendingOrder) override;
     bool filterAcceptsRow(int row, const QModelIndex &parent_index) const override;
     QVariant data(const QModelIndex &index, int role) const override;
-
+    using QAbstractItemModel::persistentIndexList;
 };
 
 

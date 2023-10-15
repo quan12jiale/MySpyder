@@ -1008,13 +1008,16 @@ void DirView::save_expanded_state()
     // 要不弄一个继承QFileSystemModel,把persistentIndexList()改成public的,然后setModel
     //persistentIndexList()是QAbstractItemModel的protected成员函数，
     //而该类没有继承自QAbstractItemModel，无法调用
-    /*if (model) {
+    ProxyModel* proxymodel = qobject_cast<ProxyModel*>(model);
+    // If model is not installed, 'model' will be None: this happens when
+    // using the Project Explorer without having selected a workspace yet
+    if (proxymodel) {
         __expanded_state.clear();
-        foreach (QModelIndex idx, model->persistentIndexList()) {
-            if (this->isExpanded(idx));
-            __expanded_state.append(get_filename(idx));
+        foreach (QModelIndex idx, proxymodel->persistentIndexList()) {
+            if (this->isExpanded(idx))
+                __expanded_state.append(get_filename(idx));
         }
-    }*/
+    }
 }
 
 void DirView::restore_directory_state(const QString &fname)
@@ -1048,7 +1051,7 @@ void DirView::follow_directories_loaded(const QString &fname)
         _to_be_loaded.removeOne(path);
     if (_to_be_loaded.size() == 0) {
         disconnect(fsmodel, SIGNAL(directoryLoaded(QString)),
-                   this,SLOT(restore_directory_state(QString)));
+                   this,SLOT(follow_directories_loaded(QString)));
         if (_scrollbar_positions != QPoint())
             QTimer::singleShot(50,this,SLOT(restore_scrollbar_positions()));
     }
