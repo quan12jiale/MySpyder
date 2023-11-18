@@ -96,25 +96,25 @@ HTMLDelegate::HTMLDelegate(QObject* parent,int margin)
 
 void HTMLDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItem* options = new QStyleOptionViewItem(option);
-    initStyleOption(options, index);
+    QStyleOptionViewItem options(option);
+    initStyleOption(&options, index);
 
     QStyle* style;
-    if (options->widget == nullptr)
+    if (options.widget == nullptr)
         style = QApplication::style();
     else
-        style = options->widget->style();
+        style = options.widget->style();
 
     QTextDocument doc;
     doc.setDocumentMargin(_margin);
-    doc.setHtml(options->text);
+    doc.setHtml(options.text);
 
-    options->text = "";
-    style->drawControl(QStyle::CE_ItemViewItem, options, painter);
+    options.text = "";
+    style->drawControl(QStyle::CE_ItemViewItem, &options, painter);
 
     QAbstractTextDocumentLayout::PaintContext ctx;
 
-    QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, options);
+    QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &options);
     painter->save();
 
     //if hasattr(options.widget, 'files_list')  //TODO
@@ -126,11 +126,11 @@ void HTMLDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, 
 
 QSize HTMLDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItem* options = new QStyleOptionViewItem(option);
-    initStyleOption(options, index);
+    QStyleOptionViewItem options(option);
+    initStyleOption(&options, index);
 
     QTextDocument doc;
-    doc.setHtml(options->text);
+    doc.setHtml(options.text);
 
     return QSize(static_cast<int>(doc.idealWidth()), static_cast<int>(doc.size().height()) - 2);
 }
