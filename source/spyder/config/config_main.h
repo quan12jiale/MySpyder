@@ -212,6 +212,7 @@ extern QList<QPair<QString, QHash<QString,QVariant>>> DEFAULTS;
 
 QString qbytearray_to_str(const QByteArray& qba);
 
+QString getIniPath();
 QVariant get_default(const QString& section, const QString& option);
 QVariant CONF_get(const QString& section, const QString& option, const QVariant& _default=QVariant());
 

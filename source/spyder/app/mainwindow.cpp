@@ -813,7 +813,7 @@ void MainWindow::set_window_settings(QString hexstate, QSize window_size, QSize 
     this->move(this->window_position);
 
     if (!hexstate.isEmpty()) {
-        QSettings settings;
+        QSettings settings(getIniPath(), QSettings::Format::IniFormat);
         QString run_count = "run_count";
         if (settings.value(run_count, 0).toInt() == 0) {
             settings.setValue(run_count, 1);

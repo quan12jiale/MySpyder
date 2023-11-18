@@ -28,7 +28,7 @@ void registe_meta_type()
 
 void read_default_to_settings()
 {
-    QSettings settings;
+    QSettings settings(getIniPath(), QSettings::Format::IniFormat);
     foreach (auto pair, DEFAULTS) {
         QString section = pair.first;
         auto dict = pair.second;
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}
 
-    QSettings settings;
+    QSettings settings(getIniPath(), QSettings::Format::IniFormat);
     QString first_run = "first_run";
     if (settings.value(first_run, true).toBool()) {
         read_default_to_settings();

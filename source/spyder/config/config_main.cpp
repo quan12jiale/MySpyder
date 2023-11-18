@@ -1,5 +1,6 @@
 ﻿#include "config_main.h"
 #include "fonts.h"
+#include <QStandardPaths>
 
 QStringList SANS_SERIF = {"Sans Serif", "DejaVu Sans", "Bitstream Vera Sans",
                           "Bitstream Charter", "Lucida Grande", "MS Shell Dlg 2",
@@ -417,6 +418,18 @@ QString qbytearray_to_str(const QByteArray& qba)
     return QString(qba.toHex());
 }
 
+QString getIniPath()
+{
+	/*
+	在QCoreApplication::setOrganizationName("Quan");
+	QCoreApplication::setApplicationName("spyder");
+	之后调用，返回的就是C:/Users/quan1/AppData/Roaming/Quan/spyder
+	之前调用，返回的就是C:/Users/quan1/AppData/Roaming
+	*/
+	QString roamingPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+	return roamingPath + "/myspyder.ini";
+}
+
 QVariant get_default(const QString& section, const QString& option)
 {
     foreach (auto pair, DEFAULTS) {
@@ -432,7 +445,7 @@ QVariant get_default(const QString& section, const QString& option)
 
 QVariant CONF_get(const QString& section, const QString& option, const QVariant& _default)
 {
-    QSettings settings;
+    QSettings settings(getIniPath(), QSettings::Format::IniFormat);
     if (!settings.contains(section+"/"+option)) {
         if (_default == QVariant()) {
             qDebug()<<__FILE__<<__func__;
@@ -451,7 +464,7 @@ QVariant CONF_get(const QString& section, const QString& option, const QVariant&
 
 void CONF_set(const QString& section, const QString& option, const QVariant& value)
 {
-    QSettings settings;
+    QSettings settings(getIniPath(), QSettings::Format::IniFormat);
     settings.beginGroup(section);
     settings.setValue(option, value);
     settings.endGroup();
