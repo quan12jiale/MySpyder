@@ -1070,7 +1070,7 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
 
 void MainWindow::layout_fix_timer()
 {
-    QList<QHash<QString, size_t>> info = this->_layout_widget_info;
+    const QList<QHash<QString, size_t>> info = this->_layout_widget_info;
 	for (const QHash<QString, size_t>& i : info)
 	{
 		SpyderPluginMixin* widget = reinterpret_cast<SpyderPluginMixin*>(i["widget"]);
