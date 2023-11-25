@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     QSettings settings(getIniPath(), QSettings::Format::IniFormat);
     QString first_run = "first_run";
     if (settings.value(first_run, true).toBool()) {
-        read_default_to_settings();
+        read_default_to_settings();// 这里的QSettings代码不能注释，因为要调用read_default_to_settings()函数
         settings.setValue(first_run, false);
     }
     initialize();

@@ -54,14 +54,14 @@ public:
     QStringList not_active_path;
     QStringList project_path;
 
-    WorkingDirectory* workingdirectory;
-    Editor* editor;
+    WorkingDirectory* workingdirectory = nullptr;
+    Editor* editor = nullptr;
 
-    Projects* projects;
-    OutlineExplorer* outlineexplorer;
-    Explorer* explorer;
-    HistoryLog* historylog;
-    FindInFiles* findinfiles;
+    Projects* projects = nullptr;
+    OutlineExplorer* outlineexplorer = nullptr;
+    Explorer* explorer = nullptr;
+    HistoryLog* historylog = nullptr;
+    FindInFiles* findinfiles = nullptr;
     QList<SpyderPluginMixin*> thirdparty_plugins;
 
     QAction* check_updates_action;

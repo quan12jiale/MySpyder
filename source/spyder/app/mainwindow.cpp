@@ -813,7 +813,7 @@ void MainWindow::set_window_settings(QString hexstate, QSize window_size, QSize 
     this->move(this->window_position);
 
     if (!hexstate.isEmpty()) {
-        QSettings settings(getIniPath(), QSettings::Format::IniFormat);
+        /*QSettings settings(getIniPath(), QSettings::Format::IniFormat);
         QString run_count = "run_count";
         if (settings.value(run_count, 0).toInt() == 0) {
             settings.setValue(run_count, 1);
@@ -821,7 +821,7 @@ void MainWindow::set_window_settings(QString hexstate, QSize window_size, QSize 
         else if (settings.value(run_count).toInt() == 1) {
             settings.setValue(run_count, 2);
         }
-        else {
+        else*/ {
             // !!!当添加新控件时，或第一次打开，位置不对，可以先禁用这里
             this->restoreState(QByteArray::fromHex(hexstate.toUtf8()));
         }
@@ -880,7 +880,10 @@ void MainWindow::setup_layout(bool _default)
     QString hexstate = settings.hexstate;
 
     this->first_spyder_run = false;
-    if (!hexstate.isEmpty()) {
+	// 之所以之前第一次启动dockwidget布局不对。因为MainWindow::add_dockwidget函数调用QMainWindow::addDockWidget函数，Qt::Orientation默认是Qt::Vertical
+	// 然后这里又因为笔误，没有进入if分支，去调用setup_default_layouts函数调整dockwidget间的布局关系
+    if (hexstate.isEmpty()) {
+		// First Spyder execution:
         this->setWindowState(Qt::WindowMaximized);
         this->first_spyder_run = true;
         this->setup_default_layouts(4, settings);//default为4
@@ -931,6 +934,7 @@ void MainWindow::setup_layout(bool _default)
 
 void MainWindow::setup_default_layouts(int index, const WindowSettings& settings)
 {
+	// Setup default layouts when run for the first time
     this->maximize_dockwidget(true);
     QString hexstate = settings.hexstate;
     QSize window_size = settings.window_size;
@@ -1001,6 +1005,9 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
         for (int i = 0; i < column.size()-1; ++i) {
             auto first_row = column[i];
             auto second_row = column[i+1];
+			if (!first_row[0] || !second_row[0]) {
+				continue;
+			}
             this->splitDockWidget(first_row[0]->dockwidget,
                     second_row[0]->dockwidget,
                     Qt::Vertical);
@@ -1019,6 +1026,9 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
             }
 
 			// Raise front widget per row
+			if (!row[0]) {
+				continue;
+			}
             row[0]->dockwidget->show();
             row[0]->dockwidget->raise();
         }
@@ -1048,6 +1058,9 @@ void MainWindow::setup_default_layouts(int index, const WindowSettings& settings
         auto column = widgets_layout[c];
         for (int r = 0; r < column.size()-1; ++r) {
 			SpyderPluginMixin* widget = column[r][0];
+			if (!widget) {
+				continue;
+			}
 			SpyderDockWidget* dockwidget = widget->dockwidget;
 			int dock_min_h = dockwidget->minimumHeight();
 			int dock_max_h = dockwidget->maximumHeight();
@@ -1672,6 +1685,10 @@ void MainWindow::__update_maximize_action()
 
 void MainWindow::maximize_dockwidget(bool restore)
 {
+	/*
+	First call: maximize current dockwidget
+	Second call (or restore=True): restore original window layout
+	*/
     if (this->state_before_maximizing.isEmpty()) {
         if (restore)
             return;
