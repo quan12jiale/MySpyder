@@ -25,7 +25,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     static const QMainWindow::DockOptions DOCKOPTIONS;
-    static const int CURSORBLINK_OSDEFAULT;
+    int CURSORBLINK_OSDEFAULT;
     QString SPYDER_PATH;
     QString SPYDER_NOT_ACTIVE_PATH;
     static const int DEFAULT_LAYOUTS;

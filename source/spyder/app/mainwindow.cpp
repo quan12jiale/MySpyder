@@ -29,7 +29,8 @@ void set_opengl_implementation(const QString& option)
 
 const QMainWindow::DockOptions MainWindow::DOCKOPTIONS =
         QMainWindow::AllowTabbedDocks | QMainWindow::AllowNestedDocks;
-const int MainWindow::CURSORBLINK_OSDEFAULT = QApplication::cursorFlashTime();
+// Must construct a QGuiApplication before accessing a platform theme hint.
+//const int MainWindow::CURSORBLINK_OSDEFAULT = QApplication::cursorFlashTime();
 const int MainWindow::DEFAULT_LAYOUTS = 4;
 
 MainWindow::MainWindow(const QHash<QString,QVariant>& options)
@@ -37,6 +38,8 @@ MainWindow::MainWindow(const QHash<QString,QVariant>& options)
 {
     this->splash = setup_splash();
 
+	// WIN API： UINT GetCaretBlinkTime();
+	CURSORBLINK_OSDEFAULT = QApplication::cursorFlashTime();
     SPYDER_PATH = get_conf_path("path");
     SPYDER_NOT_ACTIVE_PATH = get_conf_path("not_active_path");
 
