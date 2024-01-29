@@ -277,6 +277,8 @@ static void remove_from_tree_cache(QHash<int,ItemLevelDebug>& tree_cache,int lin
         }
         if (item->parent())
             item->parent()->removeChild(item);
+		// 修复populate_branch函数中申请内存未释放的内存泄露
+		delete item;
     } catch (...) {
         qDebug()<<"unable to remove tree item: "<<debug;
     }
@@ -399,8 +401,8 @@ void OutlineExplorerTreeWidget::set_current_editor(CodeEditor *editor, const QSt
         }
         if (update) {
             save_expanded_state();
-            QHash<int,ItemLevelDebug> tree_cache = editor_tree_cache[editor_id];
-            populate_branch(editor,item,tree_cache);
+            QHash<int,ItemLevelDebug>& tree_cache = editor_tree_cache[editor_id];
+            populate_branch(editor,item,&tree_cache);
             restore_expanded_state();
         }
     }
@@ -439,8 +441,8 @@ void OutlineExplorerTreeWidget::update_all()
         CodeEditor* editor = it.key();
         size_t editor_id = it.value();
         QTreeWidgetItem* item = editor_items[editor_id];
-        QHash<int,ItemLevelDebug> tree_cache = editor_tree_cache[editor_id];
-        populate_branch(editor,item,tree_cache);     //暂时先禁用,再次调用该函数会出bug
+        QHash<int,ItemLevelDebug>& tree_cache = editor_tree_cache[editor_id];
+        populate_branch(editor,item,&tree_cache);     //暂时先禁用,再次调用该函数会出bug
     }
     restore_expanded_state();
 }
@@ -455,7 +457,10 @@ void OutlineExplorerTreeWidget::remove_editor(CodeEditor *editor)
             QTreeWidgetItem* root_item = editor_items.take(editor_id);
             editor_tree_cache.remove(editor_id);
             try {
-                takeTopLevelItem(indexOfTopLevelItem(root_item));
+				QTreeWidgetItem* root_item_tmp = takeTopLevelItem(indexOfTopLevelItem(root_item));
+				// root_item_tmp应该等于root_item
+				// root_item应该是editor_tree_cache中editor_id对应项的所有item的root。释放了root_item，就释放了它们
+				delete root_item_tmp;
             } catch (...) {
             }
         }
@@ -487,12 +492,16 @@ void OutlineExplorerTreeWidget::__sort_toplevel_items()
 
 QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor *editor,
                                                                      QTreeWidgetItem *root_item,
-                                                                     QHash<int, ItemLevelDebug> tree_cache)
+                                                                     QHash<int, ItemLevelDebug>* tree_cache)
 {
-    foreach (int _l, tree_cache.keys()) {
+	QHash<int, ItemLevelDebug> stack_tmp;
+	if (tree_cache == nullptr) {
+		tree_cache = &stack_tmp;
+	}
+    foreach (int _l, tree_cache->keys()) {
         if (_l >= editor->get_line_count()) {
-            if (tree_cache.contains(_l))
-                remove_from_tree_cache(tree_cache, _l);
+            if (tree_cache->contains(_l))
+                remove_from_tree_cache(*tree_cache, _l);
         }
     }
     QList<QPair<QTreeWidgetItem*,int>> ancestors;
@@ -511,12 +520,12 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
             level = -1;
         else
             level = data.fold_level;
-        ItemLevelDebug pair = tree_cache.value(line_nb, ItemLevelDebug());
+        ItemLevelDebug pair = tree_cache->value(line_nb, ItemLevelDebug());
         QTreeWidgetItem* citem = pair.item;
         int clevel = pair.level;
         if (level == -1) {
             if (citem)
-                remove_from_tree_cache(tree_cache, line_nb);
+                remove_from_tree_cache(*tree_cache, line_nb);
             continue;
         }
 
@@ -529,7 +538,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
                 func_name = data.get_function_name();
                 if (func_name.isEmpty()) {
                     if (citem != nullptr)
-                        remove_from_tree_cache(tree_cache, line_nb);
+                        remove_from_tree_cache(*tree_cache, line_nb);
                     continue;
                 }
             }
@@ -565,7 +574,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
         if (not_class_nor_function) {
             if (data.is_comment() && !show_comments) {
                 if (citem != nullptr)
-                    remove_from_tree_cache(tree_cache, line_nb);
+                    remove_from_tree_cache(*tree_cache, line_nb);
                 continue;
             }
             if (citem != nullptr) {
@@ -575,7 +584,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
                     continue;
                 }
                 else
-                    remove_from_tree_cache(tree_cache, line_nb);
+                    remove_from_tree_cache(*tree_cache, line_nb);
             };
             if (data.is_comment()) {
                 if (data.def_type == data.CELL) {
@@ -610,7 +619,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
                     continue;
                 }
                 else
-                    remove_from_tree_cache(tree_cache, line_nb);
+                    remove_from_tree_cache(*tree_cache, line_nb);
             }
             QTreeWidgetItem* _preceding = preceding;
             if (preceding_is_null(parent, &_preceding))
@@ -627,7 +636,7 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
                     continue;
                 }
                 else
-                    remove_from_tree_cache(tree_cache, line_nb);
+                    remove_from_tree_cache(*tree_cache, line_nb);
             }
             QTreeWidgetItem* _preceding = preceding;
             if (preceding_is_null(parent, &_preceding))
@@ -641,11 +650,11 @@ QHash<int,ItemLevelDebug> OutlineExplorerTreeWidget::populate_branch(CodeEditor 
         QString debug = QString("%1 -- %2/%3").arg(tmp)
                         .arg(item->parent()->text(0))
                         .arg(item->text(0));
-        tree_cache[line_nb] = ItemLevelDebug(item,level,debug);
+        (*tree_cache)[line_nb] = ItemLevelDebug(item,level,debug);
         previous_level = level;
         previous_item = item;
     }
-    return tree_cache;
+    return *tree_cache;
 }
 
 void OutlineExplorerTreeWidget::root_item_selected(QTreeWidgetItem *item)

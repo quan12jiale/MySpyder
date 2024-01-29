@@ -114,7 +114,7 @@ public:
     void remove_editor(CodeEditor* editor);
     void __sort_toplevel_items();
     QHash<int,ItemLevelDebug> populate_branch(CodeEditor* editor,QTreeWidgetItem* root_item,
-                                              QHash<int,ItemLevelDebug> tree_cache=QHash<int,ItemLevelDebug>());
+                                              QHash<int,ItemLevelDebug>* tree_cache=nullptr);
     void root_item_selected(QTreeWidgetItem* item);
     void restore();
     QTreeWidgetItem* get_root_item(QTreeWidgetItem* item);

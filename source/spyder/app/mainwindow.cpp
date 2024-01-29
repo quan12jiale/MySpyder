@@ -88,6 +88,7 @@ MainWindow::MainWindow(const QHash<QString,QVariant>& options)
     this->explorer = nullptr;
     this->projects = nullptr;
     this->outlineexplorer = nullptr;
+	this->historylog = nullptr;
     this->findinfiles = nullptr;
     this->thirdparty_plugins.clear();
 
