@@ -1,0 +1,50 @@
+{
+    "configurations": [
+        {
+            "program": "${workspaceFolder}/build/bin/x64/Debug/spyder.exe",
+            "visualizerFile": "c:\\Users\\Administrator\\AppData\\Roaming\\Code\\User\\workspaceStorage\\bb579e2be15017449ecfdfda4e38ecf2\\tonka3000.qtvsctools\\qt.natvis.xml",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                }
+            ],
+            "stopAtEntry": true,
+            "request": "launch",
+            "type": "cppvsdbg",
+            "sourceFileMap": {
+                "C:\\Users\\qt\\work\\qt": "C:\\Qt\\Qt5.15.10\\5.15.10\\Src"
+            },
+            "symbolOptions": {
+                "searchPaths": [
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\bin",
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\plugins\\platforms",
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\plugins\\styles"
+                ],
+                "searchMicrosoftSymbolServer": false
+            },
+            "name": "C++ Launch (Windows)",
+            "console": "integratedTerminal"
+        },
+        {
+            "visualizerFile": "c:\\Users\\Administrator\\AppData\\Roaming\\Code\\User\\workspaceStorage\\bb579e2be15017449ecfdfda4e38ecf2\\tonka3000.qtvsctools\\qt.natvis.xml",
+            "request": "attach",
+            "type": "cppvsdbg",
+            "sourceFileMap": {
+                "C:\\Users\\qt\\work\\qt": "C:\\Qt\\Qt5.15.10\\5.15.10\\Src"
+            },
+            "symbolOptions": {
+                "searchPaths": [
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\bin",
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\plugins\\platforms",
+                    "D:\\qt-enterprise-windows-x86-pdb-files-desktop-5.15.10\\msvc2019_64\\plugins\\styles"
+                ],
+                "searchMicrosoftSymbolServer": false
+            },
+            "name": "C++ Attach (Windows)"
+        }
+    ],
+    "version": "2.0.0"
+}
