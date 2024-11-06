@@ -36,7 +36,7 @@ BaseTimerStatus::BaseTimerStatus(QWidget* parent, QStatusBar* statusbar)
     layout->addWidget(value);
     layout->addSpacing(20);
 
-    timer = new QTimer;
+    timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(update_label()));
     timer->start(2000);
 }
