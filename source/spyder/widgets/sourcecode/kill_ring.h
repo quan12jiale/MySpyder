@@ -20,7 +20,7 @@ class QtKillRing : public QObject
 {
     Q_OBJECT
 public:
-    KillRing* _ring;
+    QScopedPointer<KillRing> _ring;
     QString _prev_yank;
     bool _skip_cursor;
     QPlainTextEdit* _text_edit;

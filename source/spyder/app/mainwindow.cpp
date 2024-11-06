@@ -46,7 +46,7 @@ MainWindow::MainWindow(const QHash<QString,QVariant>& options)
     qApp->setAttribute(Qt::AA_UseHighDpiPixmaps);
     this->default_style = qApp->style()->objectName();
 
-    this->dialog_manager = new DialogManager;
+    this->dialog_manager = new DialogManager(this);
 
     init_workdir = options.value("working_directory", QString()).toString();
     profile = options.value("profile", false).toBool();
@@ -385,7 +385,7 @@ void MainWindow::setup()
     tools_menu_actions << reset_spyder_action << nullptr
                        << update_modules_action;
 
-    external_tools_menu = new QMenu("External Tools");
+    external_tools_menu = new QMenu("External Tools", this);
     external_tools_menu_actions.clear();
 
     wp_action = new QAction(ima::icon("winpython.svg"), "WinPython control panel", this);
@@ -531,7 +531,7 @@ void MainWindow::setup()
 #endif
     //from spyder.app import tour
 	this->tour = new tour::AnimatedTour(this);
-    tours_menu = new QMenu("Interactive tours");
+    tours_menu = new QMenu("Interactive tours", this);
     tour_menu_actions.clear();
 	this->tours_available = tour::get_tours(0);
 	for (int i = 0; i < this->tours_available.size(); i++)

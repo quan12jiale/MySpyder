@@ -33,7 +33,7 @@ public slots:
 public:
     bool hide_timer_on;
     QString tip;
-    QBasicTimer* _hide_timer;
+    QScopedPointer<QBasicTimer> _hide_timer;
     BaseEditMixin<QTextEdit>* _text_edit;
     BaseEditMixin<QPlainTextEdit>* _plain_edit;
 

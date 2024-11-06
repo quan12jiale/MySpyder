@@ -35,7 +35,7 @@ QString KillRing::rotate()
 QtKillRing::QtKillRing(QPlainTextEdit* text_edit)
     : QObject (text_edit)
 {
-    this->_ring = new KillRing();
+    this->_ring.reset(new KillRing());
     this->_prev_yank = QString();
     this->_skip_cursor = false;
     this->_text_edit= text_edit;

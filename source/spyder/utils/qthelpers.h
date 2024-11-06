@@ -39,7 +39,7 @@ class DialogManager : public QObject
     Q_OBJECT
 public:
     QHash<size_t, QDialog*> dialogs;
-    DialogManager();
+    DialogManager(QObject* parent);
     void show(QDialog* dialog);
     void dialog_finished(size_t dialog_id);
     void close_all();

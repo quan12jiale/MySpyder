@@ -2,7 +2,7 @@
 #include "app/mainwindow.h"
 
 TabFilter::TabFilter(QTabBar* dock_tabbar, MainWindow* main)
-    : QObject ()
+    : QObject (dock_tabbar)
 {
     this->dock_tabbar = dock_tabbar;
     this->main = main;

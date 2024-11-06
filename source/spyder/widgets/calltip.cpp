@@ -2,7 +2,7 @@
 #include "widgets/mixins.h"
 
 CallTipWidget::CallTipWidget(BaseEditMixin<QTextEdit>* text_edit,bool hide_timer_on)
-    : QLabel (nullptr,Qt::ToolTip)
+    : QLabel (text_edit,Qt::ToolTip)
 {
     // 判断是否继承自QTextEdit是因为widgets/ipythonconsole/control.py
     // 的ControlWidget类继承自QTextEdit
@@ -12,7 +12,7 @@ CallTipWidget::CallTipWidget(BaseEditMixin<QTextEdit>* text_edit,bool hide_timer
 
     this->hide_timer_on = hide_timer_on;
     this->tip = QString();
-    this->_hide_timer = new QBasicTimer;
+    this->_hide_timer.reset(new QBasicTimer);
     this->_text_edit = text_edit;
 
     this->setFont(text_edit->document()->defaultFont());
@@ -28,7 +28,7 @@ CallTipWidget::CallTipWidget(BaseEditMixin<QTextEdit>* text_edit,bool hide_timer
 }
 
 CallTipWidget::CallTipWidget(BaseEditMixin<QPlainTextEdit>* text_edit,bool hide_timer_on)
-    : QLabel (nullptr,Qt::ToolTip)
+    : QLabel (text_edit,Qt::ToolTip)
 {
     // 判断是否继承自QTextEdit是因为widgets/ipythonconsole/control.py
     // 的ControlWidget类继承自QTextEdit
@@ -38,7 +38,7 @@ CallTipWidget::CallTipWidget(BaseEditMixin<QPlainTextEdit>* text_edit,bool hide_
 
     this->hide_timer_on = hide_timer_on;
     this->tip = QString();
-    this->_hide_timer = new QBasicTimer;
+    this->_hide_timer.reset(new QBasicTimer);
     this->_plain_edit = text_edit;
 
     this->setFont(text_edit->document()->defaultFont());

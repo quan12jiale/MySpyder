@@ -331,8 +331,8 @@ void set_item_user_text(QTreeWidgetItem* item,const QString& text)
     item->setData(0, Qt::UserRole, text);
 }
 
-DialogManager::DialogManager()
-    : QObject ()
+DialogManager::DialogManager(QObject* parent)
+    : QObject (parent)
 {
     this->dialogs = QHash<size_t, QDialog*>();
 }
