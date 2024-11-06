@@ -53,15 +53,35 @@ set_target_properties(${LIBRARY_TARGET_NAME} PROPERTIES AUTOMOC ON)
 ##设置预处理器定义
 target_compile_definitions(${LIBRARY_TARGET_NAME} PRIVATE UNICODE QT_DLL QT_NO_DEBUG NDEBUG QT_CORE_LIB QT_GUI_LIB QT_WIDGETS_LIB) # WIN32
 
+# 设置一个变量
+set(ENABLE_VLD TRUE) # TRUE FALSE
+
+if(ENABLE_VLD)
+    message("VLD install path: $ENV{VLDDIR}") # C:/Program Files (x86)/Visual Leak Detector
+    set(VLD_INCLUDE_PATH "$ENV{VLDDIR}/include")
+    add_definitions(-DENABLE_VLD)
+    
+    if(CMAKE_SIZEOF_VOID_P EQUAL 4)
+        set(VLD_LIB_PATH "$ENV{VLDDIR}/lib/Win32/vld.lib")
+    elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+        set(VLD_LIB_PATH "$ENV{VLDDIR}/lib/Win64/vld.lib")
+    endif()
+else()
+    set(VLD_INCLUDE_PATH "")
+    set(VLD_LIB_PATH "")
+endif()
+
 ##配置构建/使用时的头文件路径
 target_include_directories(
     ${LIBRARY_TARGET_NAME}
     PUBLIC   
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${LIBRARY_TARGET_NAME}/>"
+    ${VLD_INCLUDE_PATH}
 )
 
 ##配置库依赖
 find_package(Qt5 COMPONENTS Core Gui Widgets PrintSupport REQUIRED)
 target_link_libraries(${LIBRARY_TARGET_NAME}
     PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::PrintSupport
+    ${VLD_LIB_PATH}
 )

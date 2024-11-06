@@ -1,4 +1,7 @@
-﻿#include "config/config_main.h"
+﻿#ifdef ENABLE_VLD
+#include "vld.h"
+#endif // ENABLE_VLD
+#include "config/config_main.h"
 #include <QApplication>
 #include <QDebug>
 #include <QIcon>
@@ -87,5 +90,7 @@ int main(int argc, char *argv[])
 	QString pattern = sh::make_python_patterns(add_kw);
 	Q_UNUSED(pattern);
 
-    return a.exec();
+    const int res = a.exec();
+    delete win;
+    return res;
 }
