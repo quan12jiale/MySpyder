@@ -206,7 +206,7 @@ public:
     TabSwitcherWidget* tabs_switcher;
 
     FindReplace* find_widget;
-    QList<FileInfo*> data;
+    QList<FileInfo*> data;// TODO 存在内存泄露，只能用shared_ptr解决
 
     QList<QAction*> menu_actions;
 

@@ -45,6 +45,9 @@ void read_default_to_settings()
 
 int main(int argc, char *argv[])
 {
+#ifdef ENABLE_VLD
+	VLDSetReportOptions(VLD_OPT_REPORT_TO_FILE, L"myspyder_memory_leak_report.txt");
+#endif // ENABLE_VLD
     registe_meta_type();
     QApplication a(argc, argv);
 	QString applicationDirPath = QCoreApplication::applicationDirPath();
@@ -74,7 +77,7 @@ int main(int argc, char *argv[])
         settings.setValue(first_run, false);
     }
     initialize();
-	testDelayJobRunner();
+	//testDelayJobRunner();
 
     MainWindow* win = new MainWindow;
     win->setup();

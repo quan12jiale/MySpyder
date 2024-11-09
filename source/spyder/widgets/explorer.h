@@ -112,6 +112,8 @@ public slots:
     void restore_scrollbar_positions();
     void restore_directory_state(const QString& fname);
     void follow_directories_loaded(const QString& fname);
+private:
+	QScopedPointer<QFileIconProvider> icon_provider_;
 };
 
 

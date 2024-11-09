@@ -224,7 +224,8 @@ void DirView::setup(const QStringList &name_filters, bool show_all)
 
 void DirView::reset_icon_provider()
 {
-    fsmodel->setIconProvider(new IconProvider(this));
+	icon_provider_.reset(new IconProvider(this));
+    fsmodel->setIconProvider(icon_provider_.data());
 }
 
 //---- Context menu
