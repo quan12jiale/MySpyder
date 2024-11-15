@@ -27,6 +27,11 @@ void registe_meta_type()
     // This attibute must be set before creating the application.
     bool high_dpi_scaling = CONF_get("main", "high_dpi_scaling").toBool();
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, high_dpi_scaling);
+
+    if (CONF_get("main", "opengl").toString() != "automatic") {
+        QString option = CONF_get("main", "opengl").toString();
+        set_opengl_implementation(option);
+    }
 }
 
 void read_default_to_settings()
@@ -43,11 +48,58 @@ void read_default_to_settings()
     }
 }
 
+void message_output(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
+    static QMutex mutex;
+    QMutexLocker locker(&mutex);
+    //读写消息
+    const QByteArray loaclMsg = msg.toLocal8Bit();
+    //输出的字符串
+    QString strOutStream;
+    switch (type)
+    {
+    case QtDebugMsg:
+        strOutStream = QString("%1 %2 %3 %4 [Debug] %5 \n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+            .arg(QString(context.file)).arg(QString(context.line)).arg(QString(context.function)).arg(QString(loaclMsg));
+        break;
+    case QtWarningMsg:
+        strOutStream = QString("%1 %2 %3 %4 [Warning] %5 \n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+            .arg(QString(context.file)).arg(QString(context.line)).arg(QString(context.function)).arg(QString(loaclMsg));
+        break;
+    case QtCriticalMsg:
+        strOutStream = QString("%1 %2 %3 %4 [Critical] %5 \n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+            .arg(QString(context.file)).arg(QString(context.line)).arg(QString(context.function)).arg(QString(loaclMsg));
+        break;
+    case QtFatalMsg:
+        strOutStream = QString("%1 %2 %3 %4 [Fatal] %5 \n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+            .arg(QString(context.file)).arg(QString(context.line)).arg(QString(context.function)).arg(QString(loaclMsg));
+        break;
+    case QtInfoMsg:
+        strOutStream = QString("%1 %2 %3 %4 [Info] %5 \n").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"))
+            .arg(QString(context.file)).arg(QString(context.line)).arg(QString(context.function)).arg(QString(loaclMsg));
+        break;
+    default:
+        break;
+    }
+    //每天生成一个新的log日志文件，文件名yyyy-MM-dd.txt
+    const QString strFileName = QString("%1.txt").arg(QDateTime::currentDateTime().date().toString("yyyy-MM-dd"));
+    QFile logFile(strFileName);
+    logFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    if (!strOutStream.isEmpty())
+    {
+        QTextStream logStream(&logFile);
+        logStream << strOutStream << "\r\n";
+    }
+    //清除缓存文件，解锁
+    logFile.flush();
+    logFile.close();
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef ENABLE_VLD
 	VLDSetReportOptions(VLD_OPT_REPORT_TO_FILE, L"myspyder_memory_leak_report.txt");
 #endif // ENABLE_VLD
+    qInstallMessageHandler(message_output);
     registe_meta_type();
     QApplication a(argc, argv);
 	QString applicationDirPath = QCoreApplication::applicationDirPath();

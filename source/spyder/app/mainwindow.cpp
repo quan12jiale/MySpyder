@@ -2267,11 +2267,6 @@ void initialize()
 {
     QIcon APP_ICON = QIcon(get_image_path("spyder.svg"));
     qApp->setWindowIcon(APP_ICON);
-
-    if (CONF_get("main", "opengl").toString() != "automatic") {
-        QString option = CONF_get("main", "opengl").toString();
-        set_opengl_implementation(option);
-    }
 }
 
 static void test()
