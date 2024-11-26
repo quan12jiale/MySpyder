@@ -19,6 +19,7 @@
 
 void set_opengl_implementation(const QString& option);
 void initialize();
+extern bool g_bRestart;
 
 class MainWindow : public QMainWindow
 {

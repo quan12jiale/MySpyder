@@ -2212,6 +2212,8 @@ void MainWindow::reset_spyder()
 void MainWindow::restart(bool reset)
 {
     qDebug() << __func__;
+    g_bRestart = true;
+    this->close();
 }
 
 void MainWindow::show_tour()
@@ -2268,6 +2270,8 @@ void initialize()
     QIcon APP_ICON = QIcon(get_image_path("spyder.svg"));
     qApp->setWindowIcon(APP_ICON);
 }
+
+bool g_bRestart = false;
 
 static void test()
 {   

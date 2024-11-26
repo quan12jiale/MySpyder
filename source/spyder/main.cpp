@@ -94,6 +94,19 @@ void message_output(QtMsgType type, const QMessageLogContext& context, const QSt
     logFile.close();
 }
 
+const char* const doubleDashString = "--";
+const char* const restartOptionName = "restart";
+bool parserCommandLineRestartOption(const QStringList& arguments)
+{
+    QCommandLineParser parser;
+
+    QCommandLineOption restartOption(restartOptionName);
+    parser.addOption(restartOption);
+
+    parser.process(arguments);
+    return parser.isSet(restartOption);
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef ENABLE_VLD
@@ -111,13 +124,19 @@ int main(int argc, char *argv[])
 	int nTimeDelay = std::rand() % 1000 + 1000;
 	QThread::msleep(nTimeDelay / 10);
 
+    const bool isSetRestartOption = parserCommandLineRestartOption(a.arguments());
+
 //  # Lock file creation
 	QString lock_file = get_conf_path("spyder.lock");
 	MyLockFile locker(lock_file);
 	bool lock_created = locker.tryLock();
-	if (!lock_created)
+    if (isSetRestartOption)
+    {
+        qDebug() << ("isSetRestartOption");
+    }
+	else if (!lock_created)
 	{
-		std::printf("Spyder is already running. If you want to open a new \n"
+		qDebug() << ("Spyder is already running. If you want to open a new \n"
 			"instance, please pass to it the --new-instance option");
 		return 0;
 	}
@@ -147,5 +166,15 @@ int main(int argc, char *argv[])
 
     const int res = a.exec();
     delete win;
+    if (g_bRestart) {
+        QStringList args = qApp->arguments();
+        const QString executable = args[0];
+
+        if (!isSetRestartOption) {
+            args.append(QString(doubleDashString) + QString(restartOptionName));
+        }
+
+        QProcess::startDetached(executable, args.mid(1));
+    }
     return res;
 }
