@@ -341,7 +341,7 @@ PythonSH::PythonSH(QTextDocument *parent,const QFont& font,const QHash<QString,C
 	int nCaptureCount = this->PROG.captureCount();
 	strListCaptureGroups = this->PROG.namedCaptureGroups();
     for (int i = 1; i <= nCaptureCount; ++i) {
-        if (!strListCaptureGroups[i].isEmpty())
+        if (!strListCaptureGroups.at(i).isEmpty())
             match_index_list.append(i);
     }
 }
@@ -383,7 +383,7 @@ void PythonSH::highlightBlock(const QString &text)
     QRegularExpressionMatch match = this->PROG.match(text_);
     while (match.hasMatch()) {
         for (int i : match_index_list) {
-            QString key = strListCaptureGroups[i];
+            const QString key = strListCaptureGroups.at(i);
             QString value = match.captured(i);
 
             if (!value.isEmpty()) {
@@ -568,8 +568,10 @@ CppSH::CppSH(QTextDocument *parent,const QFont& font,const QHash<QString,ColorBo
 {
     this->PROG = QRegularExpression(make_cpp_patterns(),
                               QRegularExpression::DotMatchesEverythingOption);
-    for (int i = 1; i < this->PROG.namedCaptureGroups().size(); ++i) {
-        if (!this->PROG.namedCaptureGroups()[i].isEmpty())
+    int nCaptureCount = this->PROG.captureCount();
+    strListCaptureGroups = this->PROG.namedCaptureGroups();
+    for (int i = 1; i <= nCaptureCount; ++i) {
+        if (!strListCaptureGroups.at(i).isEmpty())
             match_index_list.append(i);
     }
 }
@@ -586,7 +588,7 @@ void CppSH::highlightBlock(const QString &text)
     int index = 0;
     while (match.hasMatch()) {
         foreach (int i, match_index_list) {
-            QString key = this->PROG.namedCaptureGroups()[i];
+            const QString key = strListCaptureGroups.at(i);
             QString value = match.captured(key);
 
             if (!value.isEmpty()) {
@@ -688,8 +690,10 @@ MarkdownSH::MarkdownSH(QTextDocument *parent,const QFont& font,const QHash<QStri
 {
     this->PROG = QRegularExpression(make_md_patterns(),
                               QRegularExpression::DotMatchesEverythingOption);
-    for (int i = 1; i < this->PROG.namedCaptureGroups().size(); ++i) {
-        if (!this->PROG.namedCaptureGroups()[i].isEmpty())
+    int nCaptureCount = this->PROG.captureCount();
+    strListCaptureGroups = this->PROG.namedCaptureGroups();
+    for (int i = 1; i <= nCaptureCount; ++i) {
+        if (!strListCaptureGroups.at(i).isEmpty())
             match_index_list.append(i);
     }
 }
@@ -713,7 +717,7 @@ void MarkdownSH::highlightBlock(const QString &text)
 
     while (match.hasMatch() && match_count< n_characters) {
         foreach (int i, match_index_list) {
-            QString key = this->PROG.namedCaptureGroups()[i];
+            const QString key = strListCaptureGroups.at(i);
             QString value = match.captured(key);
 
             int start = match.capturedStart(key);

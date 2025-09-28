@@ -153,7 +153,7 @@ class CppSH : public BaseSH
 public:
     enum { NORMAL, INSIDE_COMMENT };
     QList<int> match_index_list;
-
+    QStringList strListCaptureGroups;
 public:
     CppSH(QTextDocument *parent,const QFont& font,
            const QHash<QString,ColorBoolBool>& color_scheme);
@@ -170,6 +170,7 @@ class MarkdownSH : public BaseSH
 public:
     enum { NORMAL, CODE };
     QList<int> match_index_list;
+    QStringList strListCaptureGroups;
 public:
     MarkdownSH(QTextDocument *parent,const QFont& font,
            const QHash<QString,ColorBoolBool>& color_scheme);
