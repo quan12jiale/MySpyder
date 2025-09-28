@@ -28,7 +28,7 @@ QIcon get_icon(const QString& name,const QIcon& _default,bool resample)
     QString icon_path = get_image_path(name, QString());
     QIcon icon;
     if (!icon_path.isEmpty())
-        icon = QIcon(icon_path);
+        icon = QIcon(QPixmap(icon_path));
     else
         icon = _default;
     if (resample) {
@@ -48,17 +48,17 @@ QIcon get_icon(const QString& name,const QString& _default,bool resample)
     QString icon_path = get_image_path(name, QString());
     QIcon icon;
     if (!icon_path.isEmpty())
-        icon = QIcon(icon_path);
+        icon = QIcon(QPixmap(icon_path));
     else if (_default.isEmpty()) {
         try {
             icon = get_std_icon(name.left(name.size()-4));
         }
         catch (...) {
-            icon = QIcon(get_image_path(name, _default));
+            icon = QIcon(QPixmap(get_image_path(name, _default)));
         }
     }
     else
-        icon = QIcon(get_image_path(name, _default));
+        icon = QIcon(QPixmap(get_image_path(name, _default)));
     if (resample) {
         QIcon icon0;
         QList<int> list = { 16, 24, 32, 48, 96, 128, 256, 512 };
@@ -79,7 +79,7 @@ QIcon icon(const QString& name,bool resample,const QString& icon_path)
         QString path = icon_path + "/" + name + ".png";
         QFileInfo info(path);
         if (info.isFile())
-            icon = QIcon(path);
+            icon = QIcon(QPixmap(path));
     }
     if (!icon.isNull())
         return icon;
