@@ -45,10 +45,10 @@ QList<QList<QVariant>> find_tasks(const QString& source_code)
 {
     QList<QList<QVariant>> results;
 
+    const QRegularExpression re(TASKS_PATTERN);
     QStringList lines = splitlines(source_code);
     for (int line = 0; line < lines.size(); ++line) {
         QString text = lines[line];
-        QRegularExpression re(TASKS_PATTERN);
         QRegularExpressionMatchIterator it = re.globalMatch(text);
         while (it.hasNext()) {
             QRegularExpressionMatch match = it.next();
@@ -77,10 +77,10 @@ QList<QList<QVariant>> cpp_find_tasks(const QString& source_code)
 {
     QList<QList<QVariant>> results;
 
+    const QRegularExpression re(CPP_TASKS_PATTERN);
     QStringList lines = splitlines(source_code);
     for (int line = 0; line < lines.size(); ++line) {
         QString text = lines[line];
-        QRegularExpression re(CPP_TASKS_PATTERN);
         QRegularExpressionMatchIterator it = re.globalMatch(text);
         while (it.hasNext()) {
             QRegularExpressionMatch match = it.next();
