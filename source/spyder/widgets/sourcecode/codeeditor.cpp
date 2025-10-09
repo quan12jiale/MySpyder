@@ -5,7 +5,7 @@ GoToLineDialog::GoToLineDialog(CodeEditor* editor)
     : QDialog (editor, Qt::WindowTitleHint
                | Qt::WindowCloseButtonHint)
 {
-    setAttribute(Qt::WA_DeleteOnClose);
+    //setAttribute(Qt::WA_DeleteOnClose);
 	this->lineno = -1;
     this->editor = editor;
 
@@ -1890,7 +1890,7 @@ void CodeEditor::go_to_line(int line, const QString &word)
 
 void CodeEditor::exec_gotolinedialog()
 {
-    GoToLineDialog* dlg = new GoToLineDialog(this);
+    QScopedPointer<GoToLineDialog> dlg{ new GoToLineDialog(this) };
     if (dlg->exec())
         this->go_to_line(dlg->get_line_number());
 }
