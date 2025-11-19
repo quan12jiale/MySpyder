@@ -117,6 +117,7 @@ bool SearchThread::find_string_in_file(const QString &fname)
     QFile file(fname);
     bool ok = file.open(QIODevice::ReadOnly | QIODevice::Text);
     if (ok) {
+        const QFileInfo info(fname);
         int lineno = 0;
         while (!file.atEnd()) {
             QString line = file.readLine();
@@ -156,7 +157,6 @@ bool SearchThread::find_string_in_file(const QString &fname)
                             return false;
                     }
                     this->total_matches++;
-                    QFileInfo info(fname);
                     emit sig_file_match(info.absoluteFilePath(),
                                         lineno+1,
                                         match.capturedStart(),
@@ -173,7 +173,6 @@ bool SearchThread::find_string_in_file(const QString &fname)
                             return false;
                     }
                     this->total_matches++;
-                    QFileInfo info(fname);
                     emit sig_file_match(info.absoluteFilePath(),
                                         lineno+1,
                                         found,
@@ -770,9 +769,10 @@ QSize ItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelInd
 
 
 /********** ResultsBrowser **********/
-ResultsBrowser::ResultsBrowser(QWidget* parent)
+ResultsBrowser::ResultsBrowser(QWidget* parent, int max_results)
     : OneColumnTree (parent)
 {
+    this->max_results = max_results;
     set_title("");
     set_sorting(OFF);
     setSortingEnabled(false);
@@ -911,6 +911,12 @@ void ResultsBrowser::append_result(QString filename,int lineno,int colno,
                                    int match_end,QString line,int num_matches)
 {
     //qDebug()<<filename<<lineno<<line;
+    if (this->data.size() >= this->max_results) {
+        this->set_title("Maximum number of results reached!Try "
+            "narrowing the search.");
+        emit this->sig_max_results_reached();
+        return;
+    }
     if (!this->files.contains(filename)) {
         QStringList title = fileMatchItemHelp(filename);
         FileMatchItem* file_item = new FileMatchItem(this, filename, sorting, title);
@@ -1027,6 +1033,9 @@ FindInFilesWidget::FindInFilesWidget(QWidget* parent,
     layout->addLayout(hlayout);
     layout->addWidget(status_bar);
     setLayout(layout);
+
+    connect(result_browser, &ResultsBrowser::sig_max_results_reached, this,
+        [this]() { this->stop_and_reset_thread(); });
 }
 
 void FindInFilesWidget::set_search_text(const QString &text)

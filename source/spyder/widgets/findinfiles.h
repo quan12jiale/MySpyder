@@ -237,9 +237,12 @@ struct StrIntInt
 class ResultsBrowser : public OneColumnTree
 {
     Q_OBJECT
+signals:
+    void sig_max_results_reached();
 public:
     QString search_text;
     //results
+    int max_results;
     int total_matches;
     QString error_flag;
     bool completed;
@@ -249,7 +252,7 @@ public:
 
     int num_files;
 public:
-    ResultsBrowser(QWidget* parent);
+    ResultsBrowser(QWidget* parent, int max_results = 1000);
     void set_sorting(const QString& flag);
     void clear_title(const QString& search_text);
     QString truncate_result(const QString& line,int start,int end);
